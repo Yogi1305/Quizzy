@@ -120,7 +120,7 @@ const ContestQuestion = () => {
 
       const response = await axios.post(
         `${Baseurl}/post/answer`,
-        { UserId, ContestId, QuestionId, selectedOption: option },
+        { UserId, ContestId, QuestionId, Answer: option },
         {
           headers: {
             "Content-Type": "application/json",
@@ -129,7 +129,7 @@ const ContestQuestion = () => {
         }
       );
 
-      console.log("Answer submitted successfully:", response.data);
+      // console.log("Answer submitted successfully:", response.data);
 
       // Show success toast
       toast.success("Answer submitted successfully!");

@@ -6,7 +6,7 @@ export const saveAnswer = async (req, res) => {
     try {
         const { UserId, ContestId, QuestionId, Answer } = req.body;
 
-        
+        // console.log(Answer);
         
 
         const question = await QuestionModel.findOne({ _id: QuestionId });

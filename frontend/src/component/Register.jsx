@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Baseurl } from '../main';
+import Navbar from './Navbar';
 
 // Custom Logo Component
 const QuizLogo = () => (
@@ -125,6 +126,7 @@ const RegistrationForm = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500 flex flex-col">
       {/* Navigation */}
+      <Navbar/>
       <div className="w-full backdrop-blur-sm bg-white/10 border-b border-white/20 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">

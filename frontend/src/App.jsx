@@ -10,6 +10,9 @@ import Home from "./component/Home";
 import QuizResults from "./component/QuizResults";
 import ContestCreation from "./component/ContestCreation";
 import { ToastContainer } from "react-toastify";
+import About from "./component/Portfolio";
+import Portfolio from "./component/Portfolio";
+
 
 const router=createBrowserRouter([
   {
@@ -39,6 +42,9 @@ const router=createBrowserRouter([
   },{
     path:"/createcontest",
     element:<ContestCreation/>
+  },{
+    path:"/about",
+    element:<Portfolio/>
   }
 ]);
 
@@ -51,6 +57,7 @@ function App() {
       
      <ToastContainer/>
       <RouterProvider router={router}/>
+      
        
     </div>
   )

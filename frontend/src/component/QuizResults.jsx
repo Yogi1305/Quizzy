@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Baseurl } from '../main'; // Adjust the import path as needed
+import Navbar from './Navbar';
 
 const QuizResults = () => {
   const [results, setResults] = useState([]);
@@ -146,7 +147,10 @@ const QuizResults = () => {
   }
 
   return (
+    <>
+     <Navbar/>
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white py-8 px-4">
+     
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg mb-8 overflow-hidden">
@@ -321,6 +325,7 @@ const QuizResults = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
