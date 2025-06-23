@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Baseurl } from '../main';
 import QuestionForm from './Question.jsx';
+import Navbar from './Navbar.jsx';
 
 // Modal component for the question form
 const Modal = ({ isOpen, onClose, children }) => {
@@ -166,9 +167,11 @@ const ContestCreation = () => {
 
   // Toggle contest visibility
   const toggleContestVisibility = async (contestId, currentStatus) => {
+    console.log("s",currentStatus);
     try {
-      await axios.put(`${Baseurl}/api/contests/${contestId}`, 
-        { isPublic: !currentStatus }, 
+      await axios.post(`${Baseurl}/post/makepublic`, 
+
+        { isPublic: !currentStatus,contestId }, 
         { withCredentials: true }
       );
       
@@ -206,7 +209,10 @@ const ContestCreation = () => {
   };
   
   return (
+    <>
+     <Navbar/>
     <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      
       <div className="bg-gradient-to-r from-purple-700 to-indigo-800 rounded-xl p-8 shadow-xl mb-10">
         <h1 className="text-3xl font-extrabold text-white mb-2">Contest Creation Hub</h1>
         <p className="text-purple-100">Create and manage programming contests for your community</p>
@@ -463,6 +469,8 @@ const ContestCreation = () => {
       
       <ToastContainer position="bottom-right" theme="colored" />
     </div>
+    </>
+    
   );
 };
 

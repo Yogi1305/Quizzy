@@ -12,6 +12,7 @@ import ContestCreation from "./component/ContestCreation";
 import { ToastContainer } from "react-toastify";
 import About from "./component/Portfolio";
 import Portfolio from "./component/Portfolio";
+import PricingPage from "./component/PricingPage";
 
 
 const router=createBrowserRouter([
@@ -45,6 +46,9 @@ const router=createBrowserRouter([
   },{
     path:"/about",
     element:<Portfolio/>
+  },{
+    path:"/pricing",
+    element:<PricingPage/>
   }
 ]);
 

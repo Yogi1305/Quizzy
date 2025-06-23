@@ -75,7 +75,7 @@ const Navbar = () => {
               <Link to="/" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Home</Link>
               <Link to="/contest" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Contests</Link>
               <Link to="/about" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">About</Link>
-              
+              <Link to="/pricing" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Pricing</Link>
               {loading ? (
                 <div className="w-24 h-8 bg-white/20 rounded-md animate-pulse"></div>
               ) : isLoggedIn ? (

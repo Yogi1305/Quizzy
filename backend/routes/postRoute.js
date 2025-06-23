@@ -1,5 +1,5 @@
 import express from "express";
-import { addQuestion, createContest, getallcontest, getContestById} from "../controller/contestControllers.js";
+import { addQuestion, createContest, getallcontest, getContestById, makePublic} from "../controller/contestControllers.js";
 import { isloggedin } from "../middleware/isLoggedin.js";
 import {isAdmin} from "../middleware/isAdmin.js"
 import { saveAnswer } from "../controller/quizController.js";
@@ -16,4 +16,5 @@ router.route("/getcontest").get(isloggedin,getallcontest);
 router.route("/getContestById/:id").get(getContestById);
 router.route("/answer").post(isloggedin,saveAnswer)
 router.route("/results").post(getQuizResult)
+router.route("/makepublic").post(makePublic)
 export default router

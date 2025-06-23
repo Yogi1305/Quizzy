@@ -73,7 +73,10 @@ const Contest = () => {
         },
         withCredentials: true,
       });
-      setContests(response?.data?.contests || []);
+    const data = response?.data?.contests?.filter(contest => contest.isPublic === true);
+// console.log(data);
+      setContests(data || []);
+      // console.log(response?.data)
     } catch (error) {
       console.log("Error in contest page frontend", error);
       toast.error("Failed to load contests. Please try again.");

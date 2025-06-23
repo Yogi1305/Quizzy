@@ -260,29 +260,44 @@ export const removeQuestionFromContest = async (req, res) => {
 };
 
 // Get all public contests (for users to participate)
-export const getPublicContests = async (req, res) => {
-  try {
-    const currentDate = new Date();
-    
-    const contests = await Contest.find({
-      isPublic: true,
-      startDate: { $lte: currentDate },
-      endDate: { $gte: currentDate }
-    })
-    .sort({ startDate: 1 })
-    .select('title description startDate endDate');
-    
-    return res.status(200).json({ 
-      success: true,
-      count: contests.length,
-      contests 
-    });
-  } catch (error) {
-    console.error("Error in getPublicContests controller:", error);
-    return res.status(500).json({ 
-      success: false,
-      message: "Server error", 
-      error: error.message 
-    });
-  }
+
+export const makePublic = async (req, res) => {
+    try {
+        const { contestId, isPublic } = req.body;
+        
+       
+        const contest = await Contest.findById(contestId);
+        console.log(contest);
+        
+       
+        if (!contest) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Contest not found" 
+            });
+        }
+        
+      
+        contest.isPublic = isPublic;
+        
+        
+        await contest.save();
+        
+        return res.status(200).json({ 
+            success: true,
+            message: "Contest visibility updated successfully",
+            contest: {
+                id: contest._id,
+                title: contest.title,
+                isPublic: contest.isPublic
+            }
+        });
+        
+    } catch (error) {
+        console.log("error in makePublic", error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Internal server error" 
+        });
+    }
 };
