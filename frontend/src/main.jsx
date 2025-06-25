@@ -4,8 +4,8 @@ import './index.css'
 import App from './App.jsx'
 
 
-export const Baseurl='http://localhost:8000';
-// export const Baseurl="https://quizzy-fxbg.onrender.com"
+// export const Baseurl='http://localhost:8000';
+export const Baseurl="https://quizzy-fxbg.onrender.com"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

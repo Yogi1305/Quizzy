@@ -142,9 +142,9 @@ const Home = () => {
           </div>
           
           <div className="flex space-x-6">
-            <a href="#" className="text-white/70 hover:text-white">Privacy Policy</a>
+            <a href="/privacy" className="text-white/70 hover:text-white">Privacy Policy</a>
             <a href="#" className="text-white/70 hover:text-white">Terms of Service</a>
-            <a href="#" className="text-white/70 hover:text-white">Contact Us</a>
+            <a href="/about" className="text-white/70 hover:text-white">Contact Us</a>
           </div>
         </div>
       </footer>

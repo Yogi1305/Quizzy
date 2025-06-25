@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import About from "./component/Portfolio";
 import Portfolio from "./component/Portfolio";
 import PricingPage from "./component/PricingPage";
+import PrivacyPage from "./component/PrivacyPage";
 
 
 const router=createBrowserRouter([
@@ -49,6 +50,9 @@ const router=createBrowserRouter([
   },{
     path:"/pricing",
     element:<PricingPage/>
+  },{
+    path:"/privacy",
+    element:<PrivacyPage/>
   }
 ]);
 
