@@ -10,4 +10,5 @@ router.route("/logout").get(isloggedin,logout);
 router.route("/checklogged").get(isloggedin,checklogging);
 router.route("/isadmin").get(isloggedin,isAdmin,Admin);
 router.route("/complete").post(completecontest)
+
 export default router;

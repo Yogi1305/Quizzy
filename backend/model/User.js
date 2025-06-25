@@ -14,7 +14,7 @@ const userModel= mongoose.Schema({
     
     branch:{
         type: String,
-    required: true
+   
     },
     isAdmin:{
         type:Boolean,
