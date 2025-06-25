@@ -46,6 +46,7 @@ const Home = () => {
       await axios.get(`${Baseurl}/logout`, {
         withCredentials: true
       });
+      localStorage.removeItem("userId1");
       setIsLoggedIn(false);
       setUserName('');
       setShowDropdown(false);
@@ -143,8 +144,8 @@ const Home = () => {
           
           <div className="flex space-x-6">
             <a href="/privacy" className="text-white/70 hover:text-white">Privacy Policy</a>
-            <a href="#" className="text-white/70 hover:text-white">Terms of Service</a>
-            <a href="/about" className="text-white/70 hover:text-white">Contact Us</a>
+            <a href="/terms" className="text-white/70 hover:text-white">Terms of Service</a>
+            <a href="/contactus" className="text-white/70 hover:text-white">Contact Us</a>
           </div>
         </div>
       </footer>

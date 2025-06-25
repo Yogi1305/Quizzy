@@ -14,6 +14,9 @@ import About from "./component/Portfolio";
 import Portfolio from "./component/Portfolio";
 import PricingPage from "./component/PricingPage";
 import PrivacyPage from "./component/PrivacyPage";
+import Profile from "./component/Profile";
+import TermsPage from "./component/TermsPage";
+import ContactUs from "./component/ContactUs";
 
 
 const router=createBrowserRouter([
@@ -53,6 +56,14 @@ const router=createBrowserRouter([
   },{
     path:"/privacy",
     element:<PrivacyPage/>
+  },{
+    path:"/profile",
+    element:<Profile/>
+  },{
+    path:"terms",
+    element:<TermsPage/>
+  },{path:"contactus",
+    element:<ContactUs/>
   }
 ]);
 
