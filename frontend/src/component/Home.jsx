@@ -146,7 +146,9 @@ const Home = () => {
             <a href="/privacy" className="text-white/70 hover:text-white">Privacy Policy</a>
             <a href="/terms" className="text-white/70 hover:text-white">Terms of Service</a>
             <a href="/contactus" className="text-white/70 hover:text-white">Contact Us</a>
+            <a href="/refunds" className='text-white/70 hover:text-white'>Cancellation and Refund</a>
           </div>
+
         </div>
       </footer>
     </div>

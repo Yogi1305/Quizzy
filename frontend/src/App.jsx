@@ -17,6 +17,7 @@ import PrivacyPage from "./component/PrivacyPage";
 import Profile from "./component/Profile";
 import TermsPage from "./component/TermsPage";
 import ContactUs from "./component/ContactUs";
+import CancellationRefund from "./CancellationRefund";
 
 
 const router=createBrowserRouter([
@@ -64,6 +65,10 @@ const router=createBrowserRouter([
     element:<TermsPage/>
   },{path:"contactus",
     element:<ContactUs/>
+  },{
+    path:"refunds",
+    element:<CancellationRefund/>
+
   }
 ]);
 
