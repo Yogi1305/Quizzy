@@ -74,6 +74,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-6">
               <Link to="/" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Home</Link>
               <Link to="/contest" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Contests</Link>
+              <Link to="/polls" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Polls</Link>
               <Link to="/about" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">About</Link>
               <Link to="/pricing" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Pricing</Link>
               {loading ? (

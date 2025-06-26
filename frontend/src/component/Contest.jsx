@@ -93,7 +93,7 @@ const Contest = () => {
   const handleJoinContest = async (contestId, contest) => {
     try {
       // console.log(contestId);
-      const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem("userId1");
       const response = await axios.post(
         `${Baseurl}/complete`,
         { contestId, userId },

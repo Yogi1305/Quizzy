@@ -19,6 +19,7 @@ import TermsPage from "./component/TermsPage";
 import ContactUs from "./component/ContactUs";
 import CancellationRefund from "./CancellationRefund";
 import ShippingPage from "./ShippingPage";
+import PollCreator from "./component/PollCreator";
 
 
 const router=createBrowserRouter([
@@ -73,6 +74,9 @@ const router=createBrowserRouter([
   },{
     path:"shipping",
     element:<ShippingPage/>
+  },{
+    path:"polls",
+    element:<PollCreator/>
   }
 ]);
 

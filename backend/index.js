@@ -4,6 +4,7 @@ import { connectDb } from "./db/DBconnect.js";
 import userRoute from "../backend/routes/userRoute.js"
 import postRoute from "../backend/routes/postRoute.js"
 import paymentRoute from "../backend/routes/paymentRoute.js"
+import votingRoute from "../backend/routes/votingRoute.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import razorpay from "razorpay"
@@ -26,7 +27,8 @@ connectDb();
 
 app.use("/",userRoute);
 app.use("/post",postRoute);
-app.use("/payment",paymentRoute)
+app.use("/payment",paymentRoute);
+app.use("/voting",votingRoute)
 
 app.listen(8000 ,()=>{
     
