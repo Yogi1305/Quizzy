@@ -71,7 +71,7 @@ const router=createBrowserRouter([
     element:<CancellationRefund/>
 
   },{
-    path:"/shipping",
+    path:"shipping",
     element:<ShippingPage/>
   }
 ]);
