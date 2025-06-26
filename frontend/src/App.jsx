@@ -18,6 +18,7 @@ import Profile from "./component/Profile";
 import TermsPage from "./component/TermsPage";
 import ContactUs from "./component/ContactUs";
 import CancellationRefund from "./CancellationRefund";
+import ShippingPage from "./ShippingPage";
 
 
 const router=createBrowserRouter([
@@ -69,6 +70,9 @@ const router=createBrowserRouter([
     path:"refunds",
     element:<CancellationRefund/>
 
+  },{
+    path:"/shipping",
+    element:<ShippingPage/>
   }
 ]);
 
