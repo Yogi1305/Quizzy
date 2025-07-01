@@ -64,27 +64,27 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave }) => {
     
   };
   const modalRef = useRef(null);
-  useEffect(() => {
-  function handleClickOutside(event) {
-    if (modalRef.current && !modalRef.current.contains(event.target)) {
-      // console.log(modalRef.current.contains(event.target))
-      onClose();
-    }
-  }
+//   useEffect(() => {
+//   function handleClickOutside(event) {
+//     if (modalRef.current && !modalRef.current.contains(event.target)) {
+//       // console.log(modalRef.current.contains(event.target))
+//       onClose();
+//     }
+//   }
 
-  if (isOpen) {
-    document.addEventListener("mousedown", handleClickOutside);
-  }
+//   if (isOpen) {
+//     document.addEventListener("mousedown", handleClickOutside);
+//   }
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, [isOpen, onClose]);
+//   return () => {
+//     document.removeEventListener("mousedown", handleClickOutside);
+//   };
+// }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" style={{ zIndex: 9999 }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden" ref={modalRef}>
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-white relative">

@@ -168,38 +168,7 @@ const Contest = () => {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
-      {/* Navigation */}
-      {/* <div className="w-full backdrop-blur-sm bg-white/10 border-b border-white/20 shadow-lg sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="flex items-center">
-              <QuizLogo />
-              <span className="text-white font-bold text-xl">KnitQuiz</span>
-            </Link>
-
-            <div className="hidden md:flex items-center space-x-6">
-              <Link
-                to="/"
-                className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Home
-              </Link>
-              <Link
-                to="/contest"
-                className="bg-white/20 text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Contests
-              </Link>
-              <Link
-                to="/about"
-                className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium"
-              >
-                About
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div> */}
+      
       <Navbar/>
 
       {/* Page Content */}
