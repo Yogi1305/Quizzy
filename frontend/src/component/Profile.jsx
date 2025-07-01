@@ -40,7 +40,7 @@ const Profile = () => {
 
         <div className="mt-6 border-t pt-4 space-y-3 text-sm text-gray-700">
           <p>
-            <span className="font-semibold">Branch:</span> {userdata.branch}
+            <span className="font-semibold">Contact No.:</span> {userdata.contact}
           </p>
           <p>
             <span className="font-semibold">Contests Given:</span> {userdata.contestgiven?.length || 0}

@@ -12,8 +12,9 @@ const userModel= mongoose.Schema({
     },
    
     
-    branch:{
-        type: String,
+    contact:{
+        type: Number,
+        required:true,
    
     },
     isAdmin:{

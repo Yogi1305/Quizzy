@@ -24,7 +24,7 @@ const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    branch: '', 
+    contact: null, 
     isAdmin: false,
     passWord: '',
     contestgiven:[],
@@ -35,14 +35,14 @@ const RegistrationForm = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [formStep, setFormStep] = useState(1);
   
-  const branches = [
-    'Computer Science and Engineering',
-    'Mechanical Engineering',
-    'Electrical Engineering',
-    'Civil Engineering',
-    'Information Technology',
-    'Electronic Engineering',
-  ];
+  // const branches = [
+  //   'Computer Science and Engineering',
+  //   'Mechanical Engineering',
+  //   'Electrical Engineering',
+  //   'Civil Engineering',
+  //   'Information Technology',
+  //   'Electronic Engineering',
+  // ];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -85,7 +85,7 @@ const RegistrationForm = () => {
     e.preventDefault();
     
     // Final validation
-    if (!formData.branch || !formData.passWord) {
+    if (!formData.contact || !formData.passWord) {
       toast.warning('Please fill in all required fields');
       return;
     }
@@ -127,24 +127,7 @@ const RegistrationForm = () => {
     <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500 flex flex-col">
       {/* Navigation */}
       <Navbar/>
-      <div className="w-full backdrop-blur-sm bg-white/10 border-b border-white/20 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="flex items-center">
-              <QuizLogo />
-              <span className="text-white font-bold text-xl">KnitQuiz</span>
-            </Link>
-
-            <div className="hidden md:flex items-center space-x-6">
-              <Link to="/" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Home</Link>
-              <Link to="/contest" className="text-white hover:text-indigo-200 transition px-3 py-2 rounded-md text-sm font-medium">Contests</Link>
-              <Link to="/login" className="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition-all duration-200 font-medium">
-                Log In
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Registration Form */}
       <div className="flex-1 flex items-center justify-center p-4">
@@ -227,29 +210,24 @@ const RegistrationForm = () => {
                   <>
                     {/* Step 2: Additional Details */}
                     <div className="space-y-5">
-                      {/* Branch */}
+                      {/* Contact No. */}
                       <div>
-                        <label className="block text-sm font-medium text-white mb-1">Branch</label>
+                        <label className="block text-sm font-medium text-white mb-1">Contact No.</label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg className="h-5 w-5 text-indigo-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
                           </div>
-                          <select
-                            name="branch"
-                            value={formData.branch}
+                          <input
+                            type="Number"
+                            name="contact"
+                            value={formData.contact}
                             onChange={handleChange}
                             className="block w-full pl-10 pr-3 py-3 border-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
+                            placeholder="1234567890"
                             required
-                          >
-                            <option value="">Select your branch</option>
-                            {branches.map((branch, index) => (
-                              <option key={index} value={branch}>
-                                {branch}
-                              </option>
-                            ))}
-                          </select>
+                          />
                         </div>
                       </div>
 
@@ -299,7 +277,7 @@ const RegistrationForm = () => {
                       </div>
 
                       {/* Admin Checkbox */}
-                      <div className="flex items-center">
+                      {/* <div className="flex items-center">
                         <input
                           type="checkbox"
                           name="isAdmin"
@@ -310,7 +288,7 @@ const RegistrationForm = () => {
                         <label className="ml-2 block text-sm text-white">
                           Register as Admin
                         </label>
-                      </div>
+                      </div> */}
 
                       <div className="flex space-x-4">
                         <button

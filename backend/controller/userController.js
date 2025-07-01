@@ -8,9 +8,9 @@ import jwt from "jsonwebtoken";
 // register
 export const register=async(req,res)=>{
 
-    const {fullName,email,branch,passWord}=req.body;
+    const {fullName,email,contact,passWord}=req.body;
 
-    if(!fullName || !email ||!branch || !passWord)
+    if(!fullName || !email ||!contact || !passWord)
         return res.status(400).json({message :"all field are required"});
     const finduser= await User.findOne({email});
     if(finduser)
@@ -20,7 +20,7 @@ export const register=async(req,res)=>{
     const newuser= User.create({
         fullName,
         email,
-        branch,
+        contact,
         passWord:hashpassword,
         isAdmin:false
     })
@@ -65,6 +65,8 @@ export const login=async(req,res)=>{
         .json({
           _id: user._id,
           fullName: user.fullName,
+          email: user.email,
+          contact: user.contact,
           success: true,
           message: `Welcome back ${user?.fullName?.toUpperCase()}`,
         });

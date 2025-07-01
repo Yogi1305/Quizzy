@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 import { Baseurl } from "../main";
+import Navbar from "./Navbar";
 
 // Custom Logo Component
 const QuizLogo = () => (
@@ -43,7 +44,7 @@ const Contest = () => {
 
   // Check if user is admin
   const checkAdminStatus = async () => {
-    const UserId = localStorage.getItem("userId");
+    const UserId = localStorage.getItem("userId1");
     try {
       axios.defaults.withCredentials = true;
       const response = await axios.get(`${Baseurl}/isadmin`, {
@@ -159,9 +160,16 @@ const Contest = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500">
+    // <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500">
+     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      </div>
       {/* Navigation */}
-      <div className="w-full backdrop-blur-sm bg-white/10 border-b border-white/20 shadow-lg sticky top-0 z-10">
+      {/* <div className="w-full backdrop-blur-sm bg-white/10 border-b border-white/20 shadow-lg sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <Link to="/" className="flex items-center">
@@ -191,7 +199,8 @@ const Contest = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+      <Navbar/>
 
       {/* Page Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

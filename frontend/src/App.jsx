@@ -20,6 +20,8 @@ import ContactUs from "./component/ContactUs";
 import CancellationRefund from "./CancellationRefund";
 import ShippingPage from "./ShippingPage";
 import PollCreator from "./component/PollCreator";
+import ProtectedRoute from "./hook/loginCheck";
+import ProtectedRouteAdmin from "./hook/adminCheck";
 
 
 const router=createBrowserRouter([
@@ -40,7 +42,7 @@ const router=createBrowserRouter([
     element:<QuestionForm/>
   },{
     path:"/contest",
-    element:<Contest/>
+    element:<ProtectedRoute><Contest/></ProtectedRoute>
   },{
     path:"/ContestQuestion",
     element:<ContestQuestion/>
@@ -49,7 +51,7 @@ const router=createBrowserRouter([
     element:<QuizResults/>
   },{
     path:"/createcontest",
-    element:<ContestCreation/>
+    element:<ProtectedRouteAdmin><ContestCreation/></ProtectedRouteAdmin>
   },{
     path:"/about",
     element:<Portfolio/>
