@@ -58,17 +58,25 @@ const Modal = ({ isOpen, onClose, children }) => {
 
 const ContestCreation = () => {
   const navigate = useNavigate();
+  
+  // State for AI modal and selected contest
   const [aiModalOpen, setAiModalOpen] = useState(false);
-  const handleOpenModal = () => {
+  const [selectedAiContestId, setSelectedAiContestId] = useState(null);
+
+  // Handler to open AI modal with specific contest ID
+  const handleOpenAiModal = (contestId) => {
+    setSelectedAiContestId(contestId);
     setAiModalOpen(true);
-    console.log("appt");
+    console.log("Opening AI modal for contest:", contestId);
   };
 
-
-  const handleCloseModal = () => {
+  // Handler to close AI modal
+  const handleCloseAiModal = () => {
     setAiModalOpen(false);
-    console.log("appf");
+    setSelectedAiContestId(null);
+    console.log("Closing AI modal");
   };
+
   // State for contest creation
   const [contestData, setContestData] = useState({
     title: "",
@@ -199,7 +207,6 @@ const ContestCreation = () => {
     try {
       await axios.post(
         `${Baseurl}/post/makepublic`,
-
         { isPublic: !currentStatus, contestId },
         { withCredentials: true }
       );
@@ -223,7 +230,6 @@ const ContestCreation = () => {
   // Handle adding questions - opens the modal
   const handleAddQuestion = (contestId) => {
     setSelectedContestId(contestId);
-    // console.log(contestId);
     setIsQuestionModalOpen(true);
   };
 
@@ -237,6 +243,12 @@ const ContestCreation = () => {
   // Handle question form completion
   const handleQuestionComplete = () => {
     closeQuestionForm();
+  };
+
+  // Handle AI question completion
+  const handleAiQuestionComplete = () => {
+    handleCloseAiModal();
+    fetchContests(); // Refresh contests to see updated question count
   };
 
   return (
@@ -552,7 +564,7 @@ const ContestCreation = () => {
 
                       <div className="flex mt-4 space-x-2">
                         <button
-                          onClick={handleOpenModal}
+                          onClick={() => handleOpenAiModal(contest.id || contest._id)}
                           className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center group"
                         >
                           <svg
@@ -573,13 +585,8 @@ const ContestCreation = () => {
                             Add Question Using AI
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
                           </span>
-                         
                         </button>
-                           <AigeneratedQuestion
-                            isOpen={aiModalOpen}
-                            onClose={handleCloseModal}
-                            onSave={()=>{return 5}}
-                          />
+
                         <button
                           onClick={() =>
                             handleAddQuestion(contest.id || contest._id)
@@ -642,7 +649,6 @@ const ContestCreation = () => {
               Create a multiple choice question for your contest
             </p>
           </div>
-          {/* {console.log(selectedContestId)} */}
           {selectedContestId && (
             <QuestionForm
               contestId={selectedContestId}
@@ -650,6 +656,16 @@ const ContestCreation = () => {
             />
           )}
         </Modal>
+
+        {/* AI Generated Question Modal - Moved outside the contest cards loop */}
+        {selectedAiContestId && (
+          <AigeneratedQuestion
+            isOpen={aiModalOpen}
+            onClose={handleCloseAiModal}
+            contestId={selectedAiContestId}
+            onSave={handleAiQuestionComplete}
+          />
+        )}
 
         <ToastContainer position="bottom-right" theme="colored" />
       </div>

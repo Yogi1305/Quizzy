@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 // AI Question Generator Modal Component
-const AigeneratedQuestion = ({ isOpen, onClose, onSave }) => {
+const AigeneratedQuestion = ({ isOpen, onClose, onSave ,contestId}) => {
   // Sample data structure for questions
   const [questions, setQuestions] = useState([]);
 
@@ -15,6 +15,7 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave }) => {
   const [topic, settopic] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
+  
   // Generate new questions (simulate AI generation)
   const generateNewQuestions = async () => {
     setIsGenerating(true);
@@ -37,14 +38,14 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave }) => {
      const formm=questions[index]
       const payload = {
         ...formm,
-        contestId: localStorage.getItem("contestid")
+        contestId: contestId
       };
-      console.log(payload)
+      // console.log(payload)
 
      const response= await axios.post(`${Baseurl}/post/addQuestion`, payload, {
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': localStorage.getItem("userId")
+          'x-user-id': localStorage.getItem("userId1")
         },
         withCredentials: true,
       });

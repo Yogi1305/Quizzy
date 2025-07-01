@@ -39,7 +39,7 @@ const Contest = () => {
   const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [isAdmin, setIsAdmin] = useState(false);
-  const[reditores,setreditores]=useState(false);
+  const [reditores, setreditores] = useState(false);
   const navigate = useNavigate();
 
   // Check if user is admin
@@ -74,8 +74,10 @@ const Contest = () => {
         },
         withCredentials: true,
       });
-    const data = response?.data?.contests?.filter(contest => contest.isPublic === true);
-// console.log(data);
+      const data = response?.data?.contests?.filter(
+        (contest) => contest.isPublic === true
+      );
+      // console.log(data);
       setContests(data || []);
       // console.log(response?.data)
     } catch (error) {
@@ -104,16 +106,13 @@ const Contest = () => {
           },
           withCredentials: true,
         }
-       
       );
-    
+
       toast.success(`Joining ${contest.title}`);
       localStorage.setItem("contestid", contestId);
-    //   console.log("hi",response)
-      if(response.data.success)
-        navigate("/result")
-      else
-      navigate("/ContestQuestion");
+      //   console.log("hi",response)
+      if (response.data.success) navigate("/result");
+      else navigate("/ContestQuestion");
     } catch (error) {
       console.log("Error while navigating to ContestQuestion:", error);
       toast.error("Failed to join contest. Please try again.");
@@ -161,15 +160,15 @@ const Contest = () => {
 
   return (
     // <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500">
-     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
-      
-      <Navbar/>
+
+      <Navbar />
 
       {/* Page Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
