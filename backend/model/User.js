@@ -14,7 +14,7 @@ const userModel= mongoose.Schema({
     
     contact:{
         type: Number,
-        required:true,
+       
    
     },
     isAdmin:{
