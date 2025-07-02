@@ -1,16 +1,36 @@
 import { Contest } from "../model/Contest.js";
 import { QuestionModel } from "../model/Question.js";
+import { User } from "../model/User.js";
 
 // Create a new contest
 export const createContest = async (req, res) => {
   try {
-    const { title, description, startDate, endDate, isPublic } = req.body;
-
+    const { title, description, startDate, endDate, isPublic} = req.body;
+    const userId = req.id; 
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
     }
-
+    const findUser = await User.findById(userId);
+    if (!findUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    // Check if the user is an admin
+    if (!findUser.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied"
+      });
+    }
+   findUser.count -= 1; // Increment the count
+    await findUser.save(); // Save the updated user document
+    if (findUser.count < 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "You do not have enough contests left to create a new contest" 
+      });
+    }
     const newContest = new Contest({
+      creator: userId, // Set the creator to the logged-in user
       title,
       description: description || "",
       startDate: startDate || new Date(),
@@ -83,16 +103,46 @@ export const addQuestion = async (req, res) => {
 };
 
 
-// Get all contests
-export const getallcontest = async (req, res) => {
+// Get all contests of user
+export const getallcontestofuser = async (req, res) => {
   const userid=req.id
   // console.log(userid)
   try {
-    const contests = await Contest.find()
+    const contests = await Contest.find({creator:userid})
       .sort({ createdAt: -1 })
       // .populate('QuestionSet')
       .select('-__v'); 
     
+    if (contests.length === 0) {
+      return res.status(200).json({ 
+        success: true,
+        message: "No contests found",
+        contests: [] 
+      });
+    }
+
+    return res.status(200).json({ 
+      success: true,
+      count: contests.length,
+      contests 
+    });
+  } catch (error) {
+    console.error("Error in getAllContests controller:", error);
+    return res.status(500).json({ 
+      success: false,
+      message: "Server error", 
+      error: error.message 
+    });
+  }
+};
+// // Get all contests (for admin)
+export const getallcontest = async (req, res) => {
+  try {
+    const contests = await Contest.find()
+      .sort({ createdAt: -1 })
+      .populate('QuestionSet') // Populate questions
+      .select('-__v'); // Exclude version key
+
     if (contests.length === 0) {
       return res.status(200).json({ 
         success: true,

@@ -68,7 +68,7 @@ const Contest = () => {
     try {
       setLoading(true);
       axios.defaults.withCredentials = true;
-      const response = await axios.get(`${Baseurl}/post/getcontest`, {
+      const response = await axios.get(`${Baseurl}/post/getallcontest`, {
         headers: {
           "Content-Type": "application/json",
         },

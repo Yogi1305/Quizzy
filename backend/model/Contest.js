@@ -2,6 +2,11 @@ import mongoose from "mongoose"
 import { QuestionModel } from "./Question.js";
 
 const ContestModel = mongoose.Schema({
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     title: {
         type: String,
         required: true,

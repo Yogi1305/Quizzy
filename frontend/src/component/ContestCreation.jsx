@@ -103,7 +103,7 @@ const ContestCreation = () => {
   }, []);
 
   const fetchContests = async () => {
-    const userid = localStorage.getItem("userId");
+    const userid = localStorage.getItem("userId1");
     setIsLoading(true);
     try {
       const response = await axios.get(`${Baseurl}/post/getcontest`, {
@@ -166,11 +166,12 @@ const ContestCreation = () => {
         {
           withCredentials: true,
           headers: {
-            "x-user-id": localStorage.getItem("userId"),
+            "x-user-id": localStorage.getItem("userId1"),
           },
         }
       );
-      const newContest = response.data;
+      const newContest = response?.data.contest;
+      console.log("New contest created:", newContest);
 
       setContests([...contests, newContest]);
 
@@ -188,7 +189,8 @@ const ContestCreation = () => {
       toast.success("Contest created successfully!");
     } catch (error) {
       console.error("Error creating contest:", error);
-      toast.error("Failed to create contest. Please try again.");
+      toast.error(error?.response?.data?.message || "Failed to create contest. Please try again.");
+      navigate("/login"); // Redirect to login if unauthorized
     } finally {
       setIsSubmitting(false);
     }

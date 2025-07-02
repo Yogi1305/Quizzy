@@ -1,5 +1,6 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { User } from "../model/User.js";
 
 // create instance of razorpay
 export const razorpayInstance = () => {
@@ -39,8 +40,15 @@ export const sendApikey = async (req, res) => {
 // payment verification
 export const verification = async (req, res) => {
   // console.log(req.body);
-  const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+  const { razorpay_payment_id, razorpay_order_id, razorpay_signature ,userId,contestnumber} =
     req.body;
+    const user=await User.findById(userId);
+  if (!user) {  
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+  user.count += contestnumber;
+  user.poll += contestnumber; // Increment the poll
+  await user.save(); // Save the updated user document
   const body = razorpay_payment_id + "|" + razorpay_order_id;
   const sign = crypto
     .createHmac("sha256", process.env.SECRET_KEY)
@@ -54,6 +62,7 @@ export const verification = async (req, res) => {
         message: "payment verification sucessfull",
         reference: razorpay_payment_id,
       });
+
 
   return res
     .status(200)

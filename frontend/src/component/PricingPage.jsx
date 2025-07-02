@@ -6,9 +6,12 @@ import { Baseurl } from "../main";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+
+
 export default function PricingPage() {
   const [hoveredPlan, setHoveredPlan] = useState(null);
   const [isAnnual, setIsAnnual] = useState(false);
+ 
  const navigate=useNavigate();
   const plans = [
     {
@@ -16,7 +19,7 @@ export default function PricingPage() {
       name: "Starter",
       icon: Zap,
       contests: 10,
-      price: 99,
+      price: 49,
       popular: false,
       color: "from-blue-500 to-cyan-500",
       features: [
@@ -32,7 +35,7 @@ export default function PricingPage() {
       name: "Pro",
       icon: Crown,
       contests: 20,
-      price: 149,
+      price: 99,
       popular: true,
       color: "from-purple-500 to-pink-500",
       features: [
@@ -49,7 +52,7 @@ export default function PricingPage() {
       name: "Enterprise",
       icon: Rocket,
       contests: 50,
-      price: 399,
+      price: 199,
       popular: false,
       color: "from-orange-500 to-red-500",
       features: [
@@ -63,15 +66,16 @@ export default function PricingPage() {
       ],
     },
   ];
-
-  const handlepayment = async (amount) => {
-    //  console.log(amount)
+ 
+  const handlepayment = async (amount,contestnumber) => {
+     console.log(contestnumber)
    try {
      const { data } = await axios.get(`${Baseurl}/payment/getkey`);
     // console.log(data);
     const key = data.key;
     const response = await axios.post(`${Baseurl}/payment/order`, { amount });
     // console.log(response.data.response);
+    const userId= localStorage.getItem("userId1");
     const order = response.data.response;
     var options = {
       key: key, // Enter the Key ID generated from the Dashboard
@@ -82,12 +86,14 @@ export default function PricingPage() {
       image: "https://example.com/your_logo",
       order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       // callback_url: `${Baseurl}/payment/verification`,
+
       handler:async function (response)
       {
          const {data}=axios.post(`${Baseurl}/payment/verification`,{
           razorpay_payment_id:response.razorpay_payment_id,
            razorpay_order_id:response.razorpay_order_id,
-            razorpay_signature:response.razorpay_signature
+            razorpay_signature:response.razorpay_signature,
+            userId:userdata._id,
          })
          if(data.success)
          {
@@ -98,12 +104,12 @@ export default function PricingPage() {
          toast.error("payment failed")
 
       },
-      prefill: {
-        //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-        name: "Gaurav Kumar", //your customer's name
-        email: "gaurav.kumar@example.com",
-        contact: "9000090000", //Provide the customer's phone number for better conversion rates
-      },
+      // prefill: {
+      //   //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+      //   name: userdata.fullName, //your customer's name
+      //   email: userdata.email,
+      //   contact: userdata.contact,
+      // },
       notes: {
         address: "Razorpay Corporate Office",
       },
@@ -261,7 +267,7 @@ export default function PricingPage() {
                             ? `bg-gradient-to-r ${plan.color} hover:shadow-lg hover:shadow-purple-500/25 text-white`
                             : "bg-slate-700 hover:bg-slate-600 text-white border border-slate-600"
                         } transform hover:-translate-y-1`}
-                        onClick={() => handlepayment(finalPrice)}
+                        onClick={() => handlepayment(finalPrice,plan.contests)}
                       >
                         {plan.popular ? "Get Started" : "Choose Plan"}
                       </button>

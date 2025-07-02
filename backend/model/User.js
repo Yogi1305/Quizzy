@@ -24,7 +24,12 @@ const userModel= mongoose.Schema({
          type:String,
          required:true
     },
-    contestgiven:[{type:String}]
+    contestgiven:[{type:String}],
+    count:{
+        type:Number,
+        default:0
+    },
+    poll:{type:Number,default:0}
 },{timestamps:true})
 
 export const  User =mongoose.model("User",userModel);
