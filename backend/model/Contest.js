@@ -1,10 +1,11 @@
 import mongoose from "mongoose"
 import { QuestionModel } from "./Question.js";
+import { User } from "./User.js";
 
 const ContestModel = mongoose.Schema({
     creator: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
         required: true
     },
     title: {

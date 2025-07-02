@@ -97,9 +97,9 @@ export const Admin= (req,res)=>{
 export const completecontest = async (req, res) => {
   try {
     const { contestId, userId } = req.body;
-    // console.log(userId);
+    // console.log(contestId, userId);
 
-    const user = await User.findById(userId); // Correct way to fetch a user
+    const user = await User.findById({ _id: userId }); // Correct way to fetch a user
 
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });

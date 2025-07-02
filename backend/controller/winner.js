@@ -6,7 +6,7 @@ export const getQuizResult = async (req, res) => {
     const { ContestId } = req.body;
 
     // Validate ContestId
-    console.log("hit")
+    console.log(ContestId)
     if (!ContestId) {
       return res.status(400).json({ message: "ContestId is required" });
     }

@@ -5,11 +5,11 @@ import { Contest } from "./Contest.js";
 const QuizSchema=mongoose.Schema({
     UserId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:User
+        ref:"User"
     },
     ContestId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:Contest
+        ref:"Contest"
     },
     wrongAnswer:[{type:String}],
     correctAnswer:[{type:String}],

@@ -114,7 +114,7 @@ const Contest = () => {
       if (response.data.success) navigate("/result");
       else navigate("/ContestQuestion");
     } catch (error) {
-      console.log("Error while navigating to ContestQuestion:", error);
+      console.log("Error while navigating to ContestQuestion:", error.response);
       toast.error("Failed to join contest. Please try again.");
     }
   };

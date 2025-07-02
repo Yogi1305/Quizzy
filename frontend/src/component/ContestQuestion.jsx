@@ -115,7 +115,7 @@ const ContestQuestion = () => {
 
   const handleOptionClick = async (option, QuestionId) => {
     try {
-      const UserId = localStorage.getItem("userId");
+      const UserId = localStorage.getItem("userId1");
       const ContestId = contest._id;
 
       const response = await axios.post(

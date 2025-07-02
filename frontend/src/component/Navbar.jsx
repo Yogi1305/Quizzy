@@ -45,7 +45,9 @@ const Navbar = () => {
       await axios.get(`${Baseurl}/logout`, {
         withCredentials: true
       });
-      localStorage.removeItem('userId1'); // Clear user ID from local storage
+      localStorage.removeItem('userId1');
+      localStorage.removeItem('contestid');
+      // Clear user ID from local storage
       setIsLoggedIn(false);
       setUserName('');
       setShowDropdown(false);

@@ -58,7 +58,7 @@ const LoginForm = () => {
         withCredentials: true,
       });
       localStorage.setItem('userId1', response?.data?._id);
-      console.log('Login successful:', response.data);
+      // console.log('Login successful:', response.data);
       toast.success('Login successful');
       setRedirect(true);
     } catch (error) {
