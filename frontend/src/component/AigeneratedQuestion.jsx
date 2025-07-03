@@ -29,6 +29,8 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave ,contestId}) => {
            setIsGenerating(false);
        } catch (error) {
         console.log("error ai generation",error)
+        setIsGenerating(false);
+        toast.error(error.response?.data?.message || 'Failed to generate questions. Please try again.');
        }
   };
 
