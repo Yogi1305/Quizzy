@@ -70,7 +70,7 @@ export default function PricingPage() {
   const handlepayment = async (amount,contestnumber) => {
     //  console.log(contestnumber)
      const userId= localStorage.getItem("userId1");
-     console.log(userId)
+    //  console.log(userId)
    try {
      const { data } = await axios.get(`${Baseurl}/payment/getkey`);
     // console.log(data);
@@ -97,6 +97,7 @@ export default function PricingPage() {
            razorpay_order_id:response.razorpay_order_id,
             razorpay_signature:response.razorpay_signature,
             userId:userId,
+            contestnumber:contestnumber,
          })
          if(data.success)
          {
