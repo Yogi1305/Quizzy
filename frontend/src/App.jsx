@@ -22,6 +22,7 @@ import ShippingPage from "./ShippingPage";
 import PollCreator from "./component/PollCreator";
 import ProtectedRoute from "./hook/loginCheck";
 import ProtectedRouteAdmin from "./hook/adminCheck";
+import QuizzySEO from "./QuizzySEO";
 
 
 const router=createBrowserRouter([
@@ -88,7 +89,7 @@ function App() {
   return (
     
     <div className='w-lg h-screen  bg-cyan-200'>
-       
+       <QuizzySEO/>
      <ToastContainer/>
       <RouterProvider router={router}/>
       

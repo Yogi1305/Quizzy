@@ -14,7 +14,7 @@ const app =express();
 app.use(cors({
     origin: 'https://quizzy-bmif.vercel.app',
    
-    // origin:'http://localhost:5173',
+    // origin:'http://localhost:5173',c
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept','X-User-Id'], 
     credentials:true}));
