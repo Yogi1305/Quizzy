@@ -68,14 +68,17 @@ export default function PricingPage() {
   ];
  
   const handlepayment = async (amount,contestnumber) => {
-     console.log(contestnumber)
+    //  console.log(contestnumber)
+     const userId= localStorage.getItem("userId1");
+     console.log(userId)
    try {
      const { data } = await axios.get(`${Baseurl}/payment/getkey`);
     // console.log(data);
     const key = data.key;
     const response = await axios.post(`${Baseurl}/payment/order`, { amount });
     // console.log(response.data.response);
-    const userId= localStorage.getItem("userId1");
+   
+    
     const order = response.data.response;
     var options = {
       key: key, // Enter the Key ID generated from the Dashboard
