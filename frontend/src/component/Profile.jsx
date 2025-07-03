@@ -52,6 +52,8 @@ const Profile = () => {
             </span>
             <br />
             <span className=" font-semibold"> Count: {userdata.count}</span>
+            <br />
+            <span className=" font-semibold"> Poll: {userdata.poll}</span>
           </p>
         </div>
       </div>

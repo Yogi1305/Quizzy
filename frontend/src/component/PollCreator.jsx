@@ -384,6 +384,7 @@ const PollCreator = () => {
   };
 
   const handleSubmit = async () => {
+    const userId = localStorage.getItem("userId1");
     if (validateForm()) {
       const formattedData = {
         Title: pollData.title,
@@ -396,6 +397,7 @@ const PollCreator = () => {
         Totalvoter: [],
         Starttime: new Date(pollData.startTime),
         Endtime: new Date(pollData.endTime),
+        userId: userId,
       };
       try {
         const res = await axios.post(`${Baseurl}/voting/create`, formattedData);
@@ -406,7 +408,7 @@ const PollCreator = () => {
         }
       } catch (error) {
         console.log("fail to create poll", error);
-        toast.error("fail to create poll");
+        toast.error(error.response?.data?.message || "Failed to create poll");
       }
 
       // Reset form and hide it

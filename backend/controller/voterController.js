@@ -1,3 +1,4 @@
+import { User } from "../model/User.js";
 import { Voting } from "../model/Voting.js";
 
 // create poll
@@ -15,6 +16,16 @@ export const createpoll = async (req, res) => {
     !Title||!Organization
   )
     return res.status(200).json({ success:false,message: "All field are Required" });
+    const finduser= await User.findById({ _id: req.body.userId });
+    if(!finduser)   return res.status(404).json({success:false,message:"User not found"});
+    finduser.poll = finduser.poll - 1;
+    if(finduser.poll<0){
+      finduser.poll = 0;
+      finduser.isAdmin = false; 
+      return res.status(200).json({success:false,message:"You have no poll left to create, please contact admin to increase your poll limit."});
+
+    } 
+    await finduser.save();
   const newpoll = await Voting.create({
     Title,
     Organization,
