@@ -42,6 +42,9 @@ export const verification = async (req, res) => {
   // console.log(req.body);
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature ,userId,contestnumber} =
     req.body;
+    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !userId || !contestnumber) {
+    return res.status(400).json({ success: false, message: "some fields are missing" });
+  }
     const user=await User.findById({ _id: userId });
   if (!user) {
     return res.status(404).json({ success: false, message: "User not found" });
