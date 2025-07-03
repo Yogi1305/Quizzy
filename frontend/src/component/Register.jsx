@@ -343,7 +343,7 @@ const RegistrationForm = () => {
         </div>
       </div>
       
-      <ToastContainer position="bottom-right" theme="colored" />
+      <ToastContainer  theme="colored" />
     </div>
   );
 };

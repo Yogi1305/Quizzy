@@ -669,7 +669,7 @@ const ContestCreation = () => {
           />
         )}
 
-        <ToastContainer position="bottom-right" theme="colored" />
+        <ToastContainer theme="colored" />
       </div>
     </>
   );

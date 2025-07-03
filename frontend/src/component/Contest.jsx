@@ -183,7 +183,7 @@ const Contest = () => {
           </p>
 
           {/* Admin Create Contest Button */}
-          {isAdmin && (
+          {
             <div className="mt-6">
               <button
                 onClick={handleCreateContest}
@@ -205,7 +205,7 @@ const Contest = () => {
                 Create New Contest
               </button>
             </div>
-          )}
+          }
         </div>
 
         {/* Filters */}
@@ -322,7 +322,7 @@ const Contest = () => {
                   </p>
 
                   <div className="mb-4 space-y-2">
-                    {contest.startTime && (
+                    {contest.startDate && (
                       <div className="flex items-center text-sm text-indigo-200">
                         <svg
                           className="w-4 h-4 mr-2"
@@ -337,11 +337,20 @@ const Contest = () => {
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        <span>Starts: {formatDate(contest.startTime)}</span>
+                        <span className="font-semibold">
+                          Starts: {formatDate(contest.startDate)}
+                        
+                        </span>
+                        <br/>
+                        <br/>
+                        <span className="font-semibold">
+                          
+                          End: {formatDate(contest.endDate)}
+                        </span>
                       </div>
                     )}
 
-                    {contest.duration && (
+                    {contest.startDate && contest.endDate && (
                       <div className="flex items-center text-sm text-indigo-200">
                         <svg
                           className="w-4 h-4 mr-2"
@@ -356,7 +365,15 @@ const Contest = () => {
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <span>Duration: {contest.duration} minutes</span>
+                        <span className="text-white font-semibold">
+                          Duration:{" "}
+                          {(
+                            (new Date(contest.endDate) -
+                              new Date(contest.startDate)) /
+                            (1000 * 60)
+                          ).toFixed(0)}{" "}
+                          minutes
+                        </span>
                       </div>
                     )}
                   </div>
@@ -364,8 +381,17 @@ const Contest = () => {
                   <button
                     onClick={() => handleJoinContest(contest._id, contest)}
                     className="w-full bg-white text-indigo-600 font-medium py-2 px-4 rounded-lg hover:bg-indigo-50 transition-colors duration-300 flex items-center justify-center"
+                    disabled={new Date(contest.startDate) > new Date()}
                   >
-                    <span>Join Contest</span>
+                    <span
+                      className={`w-full font-semibold ${
+                        new Date(contest.startDate) > new Date()
+                          ? "hover:cursor-not-allowed"
+                          : "hover:cursor-pointer"
+                      }`}
+                    >
+                      Join Contest
+                    </span>
                     <svg
                       className="ml-2 w-4 h-4"
                       fill="none"
@@ -412,7 +438,7 @@ const Contest = () => {
         )}
       </div>
 
-      <ToastContainer position="bottom-right" theme="colored" />
+      <ToastContainer theme="colored" />
     </div>
   );
 };

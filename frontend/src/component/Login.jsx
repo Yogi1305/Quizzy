@@ -215,7 +215,7 @@ const LoginForm = () => {
         </div>
       </div>
 
-      <ToastContainer position="bottom-right" theme="colored" />
+      <ToastContainer theme="colored" />
 
       <style jsx>{`
         @keyframes blob {

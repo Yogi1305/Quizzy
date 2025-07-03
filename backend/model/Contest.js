@@ -15,7 +15,8 @@ const ContestModel = mongoose.Schema({
     },
     description: {
         type: String,
-        default: ""
+        default: "",
+        trim: true
     },
     startDate: {
         type: Date,
