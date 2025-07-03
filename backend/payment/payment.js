@@ -42,12 +42,13 @@ export const verification = async (req, res) => {
   // console.log(req.body);
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature ,userId,contestnumber} =
     req.body;
-    const user=await User.findById(userId);
-  if (!user) {  
+    const user=await User.findById({ _id: userId });
+  if (!user) {
     return res.status(404).json({ success: false, message: "User not found" });
   }
-  user.count += contestnumber;
-  user.poll += contestnumber; // Increment the poll
+  user.count = user.count + contestnumber;
+  user.poll = user.poll + contestnumber;
+  user.isAdmin = true;
   await user.save(); // Save the updated user document
   const body = razorpay_payment_id + "|" + razorpay_order_id;
   const sign = crypto

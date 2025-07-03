@@ -10,7 +10,7 @@ export const createContest = async (req, res) => {
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
     }
-    const findUser = await User.findById(userId);
+    const findUser = await User.findById({ _id: userId });
     if (!findUser) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -24,6 +24,8 @@ export const createContest = async (req, res) => {
    findUser.count -= 1; // Increment the count
     await findUser.save(); // Save the updated user document
     if (findUser.count < 0) {
+       findUser.isAdmin = false; // Set isAdmin to false if count is less than 0
+      await findUser.save(); // Save the updated user document
       return res.status(400).json({ 
         success: false, 
         message: "You do not have enough contests left to create a new contest" 
