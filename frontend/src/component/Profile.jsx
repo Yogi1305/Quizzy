@@ -7,9 +7,11 @@ const Profile = () => {
 
   const getuser = async () => {
     const userId = localStorage.getItem('userId1');
+     
     try {
       const response = await axios.get(`${Baseurl}/getuser/${userId}`);
       setuserdata(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -51,9 +53,9 @@ const Profile = () => {
               {userdata.isAdmin ? 'Admin' : 'User'}
             </span>
             <br />
-            <span className=" font-semibold"> Count: {userdata.count}</span>
+            <span className=" font-semibold"> Count: {userdata.count>0?userdata.count:0}</span>
             <br />
-            <span className=" font-semibold"> Poll: {userdata.poll}</span>
+            <span className=" font-semibold"> Poll: {userdata.poll>0?userdata.poll:0}</span>
           </p>
         </div>
       </div>

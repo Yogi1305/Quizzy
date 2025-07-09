@@ -23,6 +23,8 @@ import PollCreator from "./component/PollCreator";
 import ProtectedRoute from "./hook/loginCheck";
 import ProtectedRouteAdmin from "./hook/adminCheck";
 import QuizzySEO from "./QuizzySEO";
+import Mycontest from "./component/Mycontest";
+import Resetpassword from "./component/Resetpassword";
 
 
 const router=createBrowserRouter([
@@ -80,6 +82,12 @@ const router=createBrowserRouter([
   },{
     path:"polls",
     element:<PollCreator/>
+  },{
+    path:"my-contests",
+    element:<Mycontest/>
+  },{
+    path:"/resetpassword",
+    element:<Resetpassword/>
   }
 ]);
 

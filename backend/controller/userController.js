@@ -105,7 +105,13 @@ export const completecontest = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const alreadyGiven = user.contestgiven.some(id => id=== contestId);
+    // const alreadyGiven = user.contestgiven.some(id => id=== contestId);
+   const alreadyGiven = user.contestgiven.some(
+  id => id.toString() === contestId.toString()
+);
+
+
+
 
     if (alreadyGiven) {
       return res.status(200).json({ success: true });
@@ -121,11 +127,46 @@ export const completecontest = async (req, res) => {
   }
 };
 
-export const userdata=async(req,res)=>{
-   const {userId}=req.params;
+export const userinfo=async(req,res)=>{
+   const userId=req.id;
    console.log(userId);
-   const user=await User.findById(userId);
-  if(!user)
+   
+  
+   const user = await User.findById(userId)
+      .populate({
+        path: "contestgiven",
+        select: "title startDate endDate creator description", // include the fields you need from Contest
+      });
+      if(!user)
+    return res.status(200).json({message:"no user found"})
+  return res.status(200).json(user.contestgiven);
+}
+
+export const userdata=async(req,res)=>{
+   const{userId}=req.params;
+   console.log(userId); 
+   const user = await User.findById(userId);
+      if(!user)
     return res.status(200).json({message:"no user found"})
   return res.status(200).json(user);
 }
+
+
+export const resetpassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: "Email and new password are required" });
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.passWord = hashedPassword;
+  await user.save();
+
+  return res.status(200).json({ message: "Password reset successfully" });
+};

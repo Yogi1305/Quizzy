@@ -205,6 +205,11 @@ const LoginForm = () => {
                   </Link>
                 </p>
               </div>
+              <div className='mt-4 text-center'>
+                <Link to="/resetpassword" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-300 hover:to-pink-300 hover:underline transition-all duration-300 hover:scale-105">
+                  Forgot your password?
+                </Link>
+              </div>
             </div>
           </div>
 

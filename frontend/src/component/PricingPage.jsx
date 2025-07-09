@@ -19,11 +19,11 @@ export default function PricingPage() {
       name: "Starter",
       icon: Zap,
       contests: 10,
-      price: 49,
+      price: 9,
       popular: false,
       color: "from-blue-500 to-cyan-500",
       features: [
-        "Up to 10 contest creations",
+       
         "Basic quiz templates",
         "Real-time results",
         "Email support",
@@ -35,11 +35,11 @@ export default function PricingPage() {
       name: "Pro",
       icon: Crown,
       contests: 20,
-      price: 99,
+      price: 19,
       popular: true,
       color: "from-purple-500 to-pink-500",
       features: [
-        "Up to 20 contest creations",
+      
         "Premium quiz templates",
         "Advanced analytics",
         "Priority support",
@@ -52,11 +52,11 @@ export default function PricingPage() {
       name: "Enterprise",
       icon: Rocket,
       contests: 50,
-      price: 199,
+      price: 39,
       popular: false,
       color: "from-orange-500 to-red-500",
       features: [
-        "Up to 50 contest creations",
+       
         "All premium features",
         "White-label solution",
         "API access",
@@ -86,7 +86,7 @@ export default function PricingPage() {
       currency: "INR",
       name: "Quizzy", //your business name
       description: "This is for paid subscription",
-      image: "https://example.com/your_logo",
+      image: "",
       order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       // callback_url: `${Baseurl}/payment/verification`,
 
@@ -250,7 +250,7 @@ export default function PricingPage() {
                       <div className="text-center mb-8">
                         <div className="flex items-center justify-center text-lg font-semibold">
                           <Users className="w-5 h-5 mr-2 text-cyan-400" />
-                          {plan.contests} Contest Creations
+                         {isAnnual ? plan.contests *12 : plan.contests} Contest Creations
                         </div>
                       </div>
 

@@ -32,13 +32,13 @@ export const saveAnswer = async (req, res) => {
           
             if (isCorrect) {
                
-                if (!quiz.correctAnswer.includes(QuestionId)) {
+                if (!quiz.correctAnswer.includes(QuestionId) && !quiz.wrongAnswer.includes(QuestionId)) {
                     quiz.correctAnswer.push(QuestionId);
                     quiz.correctAnswerCount += 1;
                 }
             } else {
                 
-                if (!quiz.wrongAnswer.includes(QuestionId)) {
+                if (!quiz.wrongAnswer.includes(QuestionId) && !quiz.correctAnswer.includes(QuestionId)) {
                     quiz.wrongAnswer.push(QuestionId);
                 }
             }
