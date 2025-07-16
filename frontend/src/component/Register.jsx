@@ -34,6 +34,9 @@ const RegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [formStep, setFormStep] = useState(1);
+  const [otp, setOtp] = useState(null);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   
   // const branches = [
   //   'Computer Science and Engineering',
@@ -71,6 +74,12 @@ const RegistrationForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast.warning('Please enter a valid email address');
+      return;
+    }
+
+    // Check if OTP is verified
+    if (!otpVerified) {
+      toast.warning('Please verify your email with OTP first');
       return;
     }
     
@@ -120,6 +129,46 @@ const RegistrationForm = () => {
       toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp) {
+      toast.warning('Please enter your OTP');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${Baseurl}/otp/otpverify`, {
+        otp: otp
+      });
+
+      toast.success(response?.data?.message || 'OTP verified successfully!');
+      setOtpVerified(true);
+      setOtpSent(false);
+
+    } catch (error) {
+      console.error('Error in verifying OTP', error);
+      toast.error(error.response?.data?.message || 'OTP verification failed. Please try again.');
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!formData.email) {
+      toast.warning('Please enter your email to send OTP');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${Baseurl}/otp/otpsend`, { email: formData.email });
+
+      toast.success(response?.data?.message || 'OTP sent successfully!');
+      setOtpSent(true);
+      setOtpVerified(false);
+
+    } catch (error) {
+      console.error('Error in sending OTP', error);
+      toast.error(error.response?.data?.message || 'Failed to send OTP. Please try again.');
     }
   };
 
@@ -193,17 +242,75 @@ const RegistrationForm = () => {
                           />
                         </div>
                       </div>
+                      
+                      {/* Send OTP Button - Only show if OTP not sent and not verified */}
+                      {!otpSent && !otpVerified && (
+                        <button
+                          type="button"
+                          onClick={handleSendOtp}
+                          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                        >
+                          Send OTP
+                        </button>
+                      )}
 
-                      <button
-                        type="button"
-                        onClick={nextStep}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
-                      >
-                        Continue
-                        <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
+                      {/* OTP Input - Only show if OTP is sent but not verified */}
+                      {otpSent && !otpVerified && (
+                        <div>
+                          <label className="block text-sm font-medium text-white mb-1">OTP</label>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <svg className="h-5 w-5 text-indigo-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                              </svg>
+                            </div>
+                            <input
+                              type="text"
+                              name="otp"
+                              value={otp}
+                              onChange={(e) => setOtp(e.target.value)}
+                              className="block w-full pl-10 pr-3 py-3 border-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
+                              placeholder="Enter OTP"
+                              required
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Verify OTP Button - Only show if OTP is sent but not verified */}
+                      {otpSent && !otpVerified && (
+                        <button
+                          type="button"
+                          onClick={handleVerifyOtp}
+                          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+                        >
+                          Verify OTP
+                        </button>
+                      )}
+
+                      {/* Success Message - Show if OTP is verified */}
+                      {otpVerified && (
+                        <div className="flex items-center justify-center p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
+                          <svg className="h-5 w-5 text-green-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-green-200 font-medium">Email verified successfully!</span>
+                        </div>
+                      )}
+
+                      {/* Continue Button - Only show if OTP is verified */}
+                      {otpVerified && (
+                        <button
+                          type="button"
+                          onClick={nextStep}
+                          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                        >
+                          Continue
+                          <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
                   </>
                 ) : (
