@@ -13,7 +13,7 @@ dotenv.config();
 
 const app =express();
 app.use(cors({
-    origin: 'https://quizzy13.vercel.app/',
+    origin: 'https://quizzy13.vercel.app',
    
     // origin:'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
