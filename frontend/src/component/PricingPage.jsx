@@ -92,21 +92,21 @@ export default function PricingPage() {
 
       handler:async function (response)
       {
-        //  const {data}=axios.post(`${Baseurl}/payment/verification`,{
-        //   razorpay_payment_id:response.razorpay_payment_id,
-        //    razorpay_order_id:response.razorpay_order_id,
-        //     razorpay_signature:response.razorpay_signature,
-        //     userId:userId,
-        //     contestnumber:contestnumber,
-        //  })
-        //  if(data.success)
-        //  {
-        //      navigate("/contest");
+         const {data}=axios.post(`${Baseurl}/payment/verification`,{
+          razorpay_payment_id:response.razorpay_payment_id,
+           razorpay_order_id:response.razorpay_order_id,
+            razorpay_signature:response.razorpay_signature,
+            userId:userId,
+            contestnumber:contestnumber,
+         })
+         if(data.success)
+         {
+             navigate("/contest");
 
-        //  }
-        //  else
-        //  toast.error("payment failed")
-         toast.success("Payment successful! 🎉");
+         }
+         else
+         toast.error("payment failed")
+        //  toast.success("Payment successful! 🎉");
       },
       // prefill: {
       //   //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
