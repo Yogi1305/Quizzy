@@ -13,7 +13,7 @@ const QuizzySEO = () => {
       />
 
       {/* Canonical */}
-      <link rel="canonical" href="https://quizzy-bmif.vercel.app" />
+      <link rel="canonical" href="https://quizzy13.vercel.app" />
 
       {/* Open Graph */}
       <meta property="og:title" content="Quizzy - Affordable Quizzes, Polls & Contests " />
@@ -22,8 +22,8 @@ const QuizzySEO = () => {
         content="Host your own quiz contests and polls with ease. Offer prizes and engage your audience for as little as ₹10 per contest!"
       />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://quizzy-bmif.vercel.app" />
-      <meta property="og:image" content="https://quizzy-bmif.vercel.app" />
+      <meta property="og:url" content="https://quizzy13.vercel.app" />
+      <meta property="og:image" content="https://quizzy13.vercel.app" />
 
       {/* Twitter Card */}
       {/* <meta name="twitter:card" content="summary_large_image" />

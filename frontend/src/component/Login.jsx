@@ -28,7 +28,7 @@ const QuizLogo = () => (
       </svg>
       <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl opacity-20 blur-xl"></div>
     </div>
-    <span className="text-white font-black text-3xl ml-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200">KnitQuiz</span>
+    <span className="text-white font-black text-3xl ml-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200">Quiz</span>
   </div>
 );
 

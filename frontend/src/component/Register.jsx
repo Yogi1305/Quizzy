@@ -185,7 +185,7 @@ const RegistrationForm = () => {
             <div className="p-8">
               <div className="mb-6 text-center">
                 <h2 className="text-2xl font-bold text-white">Create Your Account</h2>
-                <p className="text-indigo-100 mt-2">Join the KnitQuiz community today</p>
+                <p className="text-indigo-100 mt-2">Join the Quiz community today</p>
               </div>
 
               {/* Progress Bar */}
