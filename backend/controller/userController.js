@@ -145,7 +145,7 @@ export const userinfo=async(req,res)=>{
 export const userdata=async(req,res)=>{
    const{userId}=req.params;
    console.log(userId); 
-   const user = await User.findById(userId);
+   const user = await User.findById({ _id: userId });
       if(!user)
     return res.status(200).json({message:"no user found"})
   return res.status(200).json(user);
