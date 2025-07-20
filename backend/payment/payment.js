@@ -105,7 +105,7 @@ export const webhook = async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
+     console.log(user);
       const votes = parseInt(contestnumber, 10);
       user.count += votes;
       user.poll += votes;
