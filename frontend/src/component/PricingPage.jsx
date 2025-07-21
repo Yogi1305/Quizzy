@@ -135,18 +135,14 @@ export default function PricingPage() {
          })
          if(data.success)
          {
-               localStorage.removeItem("razorpay_payment_id");
-                localStorage.removeItem("razorpay_order_id");
-                localStorage.removeItem("razorpay_signature");
-                localStorage.removeItem("rzp_checkout_anon_id");
-                localStorage.removeItem("rzp_device_id")
-                localStorage.removeItem("rzp_stored_checkout_id")
+              
           
               navigate("/contest");
 
          }
          else
-         toast.error("payment failed")
+          console.log("Payment verification failed", data.message);
+        //  toast.error("payment failed")
         //   localStorage.setItem("response.razorpay_payment_id", response.razorpay_payment_id);
         //  localStorage.setItem("response.razorpay_order_id", response.razorpay_order_id);
         //   localStorage.setItem("response.razorpay_signature", response.razorpay_signature);
