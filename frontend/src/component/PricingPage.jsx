@@ -69,34 +69,35 @@ export default function PricingPage() {
   ];
 
   // this is to handle verifcation
- useEffect(() => {
-  const verifyPayment = async () => {
-    try {
-      const { data } = await axios.post(`${Baseurl}/payment/verification`, {
-        razorpay_payment_id: localStorage.getItem("response.razorpay_payment_id"),
-        razorpay_order_id: localStorage.getItem("response.razorpay_order_id"),
-        razorpay_signature: localStorage.getItem("response.razorpay_signature"),
-        userId: localStorage.getItem("userId1"),
-        contestnumber: localStorage.getItem("cn"),
-      });
+//  useEffect(() => {
+//   const verifyPayment = async () => {
+//     try {
+//       const { data } = await axios.post(`${Baseurl}/payment/verification`, {
+//         razorpay_payment_id: localStorage.getItem("response.razorpay_payment_id"),
+//         razorpay_order_id: localStorage.getItem("response.razorpay_order_id"),
+//         razorpay_signature: localStorage.getItem("response.razorpay_signature"),
+//         userId: localStorage.getItem("userId1"),
+//         contestnumber: localStorage.getItem("cn"),
+//       });
 
-      if (data.success) {
-        localStorage.removeItem("response.razorpay_payment_id");
-        localStorage.removeItem("response.razorpay_order_id");
-        localStorage.removeItem("response.razorpay_signature");
-        localStorage.removeItem("cn");
-        navigate("/contest");
-      } else {
-        toast.error("Payment failed");
-      }
-    } catch (error) {
-      toast.error("Verification error");
-      console.error(error);
-    }
-  };
+//       if (data.success) {
+//         localStorage.removeItem("response.razorpay_payment_id");
+//         localStorage.removeItem("response.razorpay_order_id");
+//         localStorage.removeItem("response.razorpay_signature");
+//         localStorage.removeItem("cn");
+//         navigate("/contest");
+//       } else {
+//         // toast.error("Payment failed");
+//         console.log("Payment verification failed", data.message);
+//       }
+//     } catch (error) {
+//       // toast.error("Verification error");
+//       console.error(error);
+//     }
+//   };
 
-  verifyPayment(); // call it
-}, []);
+//   verifyPayment(); // call it
+// }, []);
 
  
   const handlepayment = async (amount,contestnumber) => {
@@ -125,25 +126,25 @@ export default function PricingPage() {
 
       handler:async function (response)
       {
-        //  const {data}=axios.post(`${Baseurl}/payment/verification`,{
-        //   razorpay_payment_id:response.razorpay_payment_id,
-        //    razorpay_order_id:response.razorpay_order_id,
-        //     razorpay_signature:response.razorpay_signature,
-        //     userId:userId,
-        //     contestnumber:contestnumber,
-        //  })
-        //  if(data.success)
-        //  {
-        //      navigate("/contest");
+         const {data}=axios.post(`${Baseurl}/payment/verification`,{
+          razorpay_payment_id:response.razorpay_payment_id,
+           razorpay_order_id:response.razorpay_order_id,
+            razorpay_signature:response.razorpay_signature,
+            userId:userId,
+            contestnumber:contestnumber,
+         })
+         if(data.success)
+         {
+             navigate("/contest");
 
-        //  }
-        //  else
-        //  toast.error("payment failed")
-          localStorage.setItem("response.razorpay_payment_id", response.razorpay_payment_id);
-  localStorage.setItem("response.razorpay_order_id", response.razorpay_order_id);
-  localStorage.setItem("response.razorpay_signature", response.razorpay_signature);
-         toast.success("Payment successful! 🎉");
-         window.location.reload();
+         }
+         else
+         toast.error("payment failed")
+        //   localStorage.setItem("response.razorpay_payment_id", response.razorpay_payment_id);
+        //  localStorage.setItem("response.razorpay_order_id", response.razorpay_order_id);
+        //   localStorage.setItem("response.razorpay_signature", response.razorpay_signature);
+        //  toast.success("Payment successful! 🎉");
+        //  window.location.reload();
       },
       // prefill: {
       //   //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
