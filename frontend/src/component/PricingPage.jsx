@@ -126,7 +126,7 @@ export default function PricingPage() {
 
       handler:async function (response)
       {
-         const {data}=axios.post(`${Baseurl}/payment/verification`,{
+         const {data}= await axios.post(`${Baseurl}/payment/verification`,{
           razorpay_payment_id:response.razorpay_payment_id,
            razorpay_order_id:response.razorpay_order_id,
             razorpay_signature:response.razorpay_signature,
@@ -135,7 +135,14 @@ export default function PricingPage() {
          })
          if(data.success)
          {
-             navigate("/contest");
+               localStorage.removeItem("razorpay_payment_id");
+                localStorage.removeItem("razorpay_order_id");
+                localStorage.removeItem("razorpay_signature");
+                localStorage.removeItem("rzp_checkout_anon_id");
+                localStorage.removeItem("rzp_device_id")
+                localStorage.removeItem("rzp_stored_checkout_id")
+          
+              navigate("/contest");
 
          }
          else
