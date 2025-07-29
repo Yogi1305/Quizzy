@@ -25,6 +25,7 @@ import ProtectedRouteAdmin from "./hook/adminCheck";
 import QuizzySEO from "./QuizzySEO";
 import Mycontest from "./component/Mycontest";
 import Resetpassword from "./component/Resetpassword";
+import Questionview from "./component/Questionview";
 
 
 const router=createBrowserRouter([
@@ -88,6 +89,9 @@ const router=createBrowserRouter([
   },{
     path:"/resetpassword",
     element:<Resetpassword/>
+  },{
+      path:"/questionview/:contestId",
+      element:<Questionview/>
   }
 ]);
 

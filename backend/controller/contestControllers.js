@@ -353,3 +353,63 @@ export const makePublic = async (req, res) => {
         });
     }
 };
+
+// update the contest question
+export const updatequestion = async (req, res) => {
+       const{contestId, questionId} = req.params;
+       if (!contestId || !questionId) {
+    return res.status(400).json({success: false, message: "Contest ID and Question ID are required"});
+  }
+  try {
+    const { Question, Options, Answer } = req.body;
+
+    if (!Question || !Options || !Answer) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Question, options, and answer are required" 
+      });
+    }
+
+    // Find the contest first to ensure it exists
+    const contest = await Contest.findById(contestId);
+    if (!contest) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Contest not found" 
+      });
+    }
+
+    // Find the question in the contest
+    const questionIndex = contest.QuestionSet.indexOf(questionId);
+    if (questionIndex === -1) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Question not found in this contest" 
+      });
+    }
+
+    // Update the question
+    const updatedQuestion = await QuestionModel.findByIdAndUpdate(
+      questionId,
+      { Question, Options, Answer },
+      { new: true }
+    );
+
+    if (!updatedQuestion) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Question not found" 
+      });
+    }
+
+    return res.status(200).json({ 
+      success: true,
+      message: "Question updated successfully",
+      question: updatedQuestion
+    });
+  }
+ catch (error) {
+    console.error("Error in updatequestion controller:", error);
+    
+  }
+}

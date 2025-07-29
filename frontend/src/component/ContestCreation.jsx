@@ -7,6 +7,7 @@ import { Baseurl } from "../main";
 import QuestionForm from "./Question.jsx";
 import Navbar from "./Navbar.jsx";
 import AigeneratedQuestion from "./AigeneratedQuestion.jsx";
+import { Eye } from "lucide-react";
 
 // Modal component for the question form
 const Modal = ({ isOpen, onClose, children }) => {
@@ -484,8 +485,12 @@ const ContestCreation = () => {
                         <h3 className="font-bold text-xl text-gray-800 line-clamp-1">
                           {contest.title}
                         </h3>
+                        {/* for view question */}
+                        <span className=" py-1 px-2 bg-gray-100 text-black-800 text-xs rounded-full cursor-pointer hover:bg-green-200 transition-colors flex items-center" onClick={() => navigate(`/questionview/${contest.id || contest._id}`)}>
+                          View Questions
+                        </span>
                         <span
-                          className={`px-2 py-1 text-xs rounded-full hover:cursor-pointer ${
+                          className={`px-2 py-1 text-xs rounded-full hover:cursor-pointer hover:bg-gray-200 transition-colors ${
                             contest.isPublic
                               ? "bg-green-100 text-green-800"
                               : "bg-gray-100 text-gray-800"
