@@ -2,15 +2,21 @@
 import { User } from "../model/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import admin from "firebase-admin";
+import {serviceAccount} from "./../serviceAccountKey.js" ;
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  // databaseURL: "https://your-database-name.firebaseio.com" // Replace with your Firebase database URL
+});
 
 
 
 // register
 export const register=async(req,res)=>{
 
-    const {fullName,email,contact,passWord}=req.body;
+    const {fullName,email,contact,passWord,firebaseToken}=req.body;
 
-    if(!fullName || !email ||!contact || !passWord)
+    if(!fullName || !email ||!contact || !passWord || !firebaseToken)
         return res.status(400).json({message :"all field are required"});
     const finduser= await User.findOne({email});
     if(finduser)
@@ -22,9 +28,14 @@ export const register=async(req,res)=>{
         email,
         contact,
         passWord:hashpassword,
-        isAdmin:false
+        isAdmin:false,
+        firebaseToken:firebaseToken, // Store the Firebase token
+      contestgiven: [],
+      count: 0,
+      poll: 0,
     })
-    await newuser.save;
+    await admin.messaging().subscribeToTopic([firebaseToken], "all_users");
+    await newuser.save();
     return res.status(201).json({
         message: "Account created successfully",
         success: true,

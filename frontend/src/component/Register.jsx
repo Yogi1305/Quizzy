@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Baseurl } from '../main';
 import Navbar from './Navbar';
+import firebase from 'firebase/compat/app';
 
 // Custom Logo Component
 const QuizLogo = () => (
@@ -28,7 +29,8 @@ const RegistrationForm = () => {
     isAdmin: false,
     passWord: '',
     contestgiven:[],
-    confirmPassword: ''
+    confirmPassword: '',
+    firebaseToken: localStorage.getItem("firebasetoken") || null,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);

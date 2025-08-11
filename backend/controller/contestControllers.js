@@ -1,6 +1,8 @@
 import { Contest } from "../model/Contest.js";
 import { QuestionModel } from "../model/Question.js";
 import { User } from "../model/User.js";
+import admin from "firebase-admin";
+
 
 // Create a new contest
 export const createContest = async (req, res) => {
@@ -313,29 +315,81 @@ export const removeQuestionFromContest = async (req, res) => {
 
 // Get all public contests (for users to participate)
 
+// export const makePublic = async (req, res) => {
+//     try {
+//         const { contestId, isPublic } = req.body;
+        
+       
+//         const contest = await Contest.findById(contestId);
+//         console.log(contest);
+        
+       
+//         if (!contest) {
+//             return res.status(404).json({ 
+//                 success: false, 
+//                 message: "Contest not found" 
+//             });
+//         }
+        
+      
+//         contest.isPublic = isPublic;
+        
+        
+//         await contest.save();
+        
+//         return res.status(200).json({ 
+//             success: true,
+//             message: "Contest visibility updated successfully",
+//             contest: {
+//                 id: contest._id,
+//                 title: contest.title,
+//                 isPublic: contest.isPublic
+//             }
+//         });
+        
+//     } catch (error) {
+//         console.log("error in makePublic", error);
+//         return res.status(500).json({ 
+//             success: false, 
+//             message: "Internal server error" 
+//         });
+//     }
+// };
 export const makePublic = async (req, res) => {
     try {
         const { contestId, isPublic } = req.body;
-        
-       
+
         const contest = await Contest.findById(contestId);
-        console.log(contest);
-        
-       
+
         if (!contest) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Contest not found" 
+            return res.status(404).json({
+                success: false,
+                message: "Contest not found"
             });
         }
-        
-      
+
         contest.isPublic = isPublic;
-        
-        
         await contest.save();
-        
-        return res.status(200).json({ 
+
+        // Send FCM notification if contest becomes public
+        if (isPublic) {
+            const message = {
+                notification: {
+                    title: "New Contest Available 🎉",
+                    body: `${contest.title} starts at ${contest.startTime} and ends at ${contest.endTime}`
+                },
+                topic: "all_users" // All subscribed devices
+            };
+
+            try {
+                await admin.messaging().send(message);
+                console.log("Notification sent to all_users");
+            } catch (fcmError) {
+                console.error("Error sending FCM notification:", fcmError);
+            }
+        }
+
+        return res.status(200).json({
             success: true,
             message: "Contest visibility updated successfully",
             contest: {
@@ -344,15 +398,16 @@ export const makePublic = async (req, res) => {
                 isPublic: contest.isPublic
             }
         });
-        
+
     } catch (error) {
         console.log("error in makePublic", error);
-        return res.status(500).json({ 
-            success: false, 
-            message: "Internal server error" 
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
         });
     }
 };
+
 
 // update the contest question
 export const updatequestion = async (req, res) => {
