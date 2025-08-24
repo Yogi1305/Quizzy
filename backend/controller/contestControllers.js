@@ -382,8 +382,8 @@ export const makePublic = async (req, res) => {
             };
 
             try {
-                await admin.messaging().send(message);
-                console.log("Notification sent to all_users");
+                 const result = await admin.messaging().send(message);
+                console.log("Notification sent to all_users :: ", result);
             } catch (fcmError) {
                 console.error("Error sending FCM notification:", fcmError);
             }
