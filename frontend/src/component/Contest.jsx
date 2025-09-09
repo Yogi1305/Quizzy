@@ -40,6 +40,7 @@ const Contest = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [isAdmin, setIsAdmin] = useState(false);
   const [reditores, setreditores] = useState(false);
+  const [contestStatuses, setContestStatuses] = useState({}); // Track contest completion status
   const navigate = useNavigate();
 
   // Check if user is admin
@@ -64,6 +65,44 @@ const Contest = () => {
     }
   };
 
+  // Check contest completion status for each contest
+  const checkContestStatuses = async (contestList) => {
+    const userId = localStorage.getItem("userId1");
+    const statusPromises = contestList.map(async (contest) => {
+      try {
+        const response = await axios.post(
+          `${Baseurl}/complete`,
+          { contestId: contest._id, userId },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        return {
+          contestId: contest._id,
+          isCompleted: response.data.success,
+          response: response.data
+        };
+      } catch (error) {
+        console.log(`Error checking status for contest ${contest._id}:`, error);
+        return {
+          contestId: contest._id,
+          isCompleted: false,
+          response: null
+        };
+      }
+    });
+
+    const statuses = await Promise.all(statusPromises);
+    const statusMap = {};
+    statuses.forEach(status => {
+      statusMap[status.contestId] = status;
+    });
+    setContestStatuses(statusMap);
+  };
+
   const getContests = async () => {
     try {
       setLoading(true);
@@ -77,9 +116,12 @@ const Contest = () => {
       const data = response?.data?.contests?.filter(
         (contest) => contest.isPublic === true
       );
-      // console.log(data);
       setContests(data || []);
-      // console.log(response?.data)
+      
+      // Check contest completion status for all contests
+      if (data && data.length > 0) {
+        await checkContestStatuses(data);
+      }
     } catch (error) {
       console.log("Error in contest page frontend", error);
       toast.error("Failed to load contests. Please try again.");
@@ -90,12 +132,11 @@ const Contest = () => {
 
   useEffect(() => {
     getContests();
-    checkAdminStatus(); // Check admin status when component mounts
+    checkAdminStatus();
   }, []);
 
   const handleJoinContest = async (contestId, contest) => {
     try {
-      // console.log(contestId);
       const userId = localStorage.getItem("userId1");
       const response = await axios.post(
         `${Baseurl}/complete`,
@@ -110,37 +151,49 @@ const Contest = () => {
 
       toast.success(`Joining ${contest.title}`);
       localStorage.setItem("contestid", contestId);
-      //   console.log("hi",response)
-      if (response.data.success) navigate("/result");
-      else navigate("/ContestQuestion");
+      console.log("Join contest response:", response);
+      
+      if (response.data.success) {
+        navigate("/result");
+      } else {
+        navigate("/ContestQuestion");
+      }
     } catch (error) {
       console.log("Error while navigating to ContestQuestion:", error.response);
       toast.error("Failed to join contest. Please try again.");
     }
   };
 
+  const handleViewResult = async (contestId, contest) => {
+    try {
+      toast.success(`Viewing results for ${contest.title}`);
+      localStorage.setItem("contestid", contestId);
+      navigate("/result");
+    } catch (error) {
+      console.log("Error while navigating to result:", error);
+      toast.error("Failed to view results. Please try again.");
+    }
+  };
+
   const handleCreateContest = () => {
-    navigate("/createcontest"); // Navigate to create contest page
+    navigate("/createcontest");
   };
 
   // Filter contests based on active filter
   const filteredContests = contests.filter((contest) => {
     if (activeFilter === "all") return true;
     if (activeFilter === "upcoming") {
-      // Example filtering logic - adjust based on your data structure
-      return new Date(contest.startTime) > new Date();
+      return new Date(contest.startDate) > new Date();
     }
     if (activeFilter === "active") {
-      // Example filtering logic - adjust based on your data structure
       const now = new Date();
       return (
-        new Date(contest.startTime) <= now &&
-        (!contest.endTime || new Date(contest.endTime) >= now)
+        new Date(contest.startDate) <= now &&
+        (!contest.endDate || new Date(contest.endDate) >= now)
       );
     }
     if (activeFilter === "completed") {
-      // Example filtering logic - adjust based on your data structure
-      return contest.endTime && new Date(contest.endTime) < new Date();
+      return contest.endDate && new Date(contest.endDate) < new Date();
     }
     return true;
   });
@@ -158,8 +211,79 @@ const Contest = () => {
     });
   };
 
+  // Determine button state for a contest
+  const getButtonState = (contest) => {
+    const now = new Date();
+    const startDate = new Date(contest.startDate);
+    const endDate = new Date(contest.endDate);
+    const contestStatus = contestStatuses[contest._id];
+    
+    // Contest hasn't started yet
+    if (startDate > now) {
+      return {
+        type: 'disabled',
+        text: 'Not Started',
+        disabled: true,
+        className: 'bg-gray-400 cursor-not-allowed'
+      };
+    }
+    
+    // Contest has ended
+    if (endDate && endDate < now) {
+      return {
+        type: 'view_result',
+        text: 'View Result',
+        disabled: false,
+        className: 'bg-blue-600 hover:bg-blue-700'
+      };
+    }
+    
+    // Contest is active
+    if (contestStatus && contestStatus.isCompleted) {
+      // User has completed the contest, but contest is still active
+      // Show "View Result" but only allow if contest has ended
+      if (endDate && endDate < now) {
+        return {
+          type: 'view_result',
+          text: 'View Result',
+          disabled: false,
+          className: 'bg-blue-600 hover:bg-blue-700'
+        };
+      } else {
+        return {
+          type: 'completed',
+          text: 'Completed',
+          disabled: true,
+          className: 'bg-green-600 cursor-not-allowed'
+        };
+      }
+    } else {
+      // User hasn't completed the contest and it's active
+      return {
+        type: 'join',
+        text: 'Join Contest',
+        disabled: false,
+        className: 'bg-white text-indigo-600 hover:bg-indigo-50'
+      };
+    }
+  };
+
+  const handleButtonClick = (contest, buttonState) => {
+    if (buttonState.disabled) return;
+    
+    switch (buttonState.type) {
+      case 'join':
+        handleJoinContest(contest._id, contest);
+        break;
+      case 'view_result':
+        handleViewResult(contest._id, contest);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
-    // <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500">
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -183,29 +307,27 @@ const Contest = () => {
           </p>
 
           {/* Admin Create Contest Button */}
-          {
-            <div className="mt-6">
-              <button
-                onClick={handleCreateContest}
-                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-lg transition-colors duration-300 flex items-center mx-auto"
+          <div className="mt-6">
+            <button
+              onClick={handleCreateContest}
+              className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-lg transition-colors duration-300 flex items-center mx-auto"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-                Create New Contest
-              </button>
-            </div>
-          }
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Create New Contest
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -299,116 +421,162 @@ const Contest = () => {
 
         {/* Contest Cards */}
         {!loading && filteredContests.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredContests.map((contest) => (
-              <div
-                key={contest._id}
-                className="backdrop-blur-sm bg-white/10 rounded-xl overflow-hidden border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px]"
-              >
-                <div className="h-3 bg-gradient-to-r from-blue-400 to-purple-500"></div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-bold text-white">
-                      {contest.title}
-                    </h3>
-                    <span className="px-2 py-1 bg-indigo-600 text-xs font-semibold text-white rounded-full">
-                      {contest.QuestionSet?.length || 0} Questions
-                    </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredContests.map((contest) => {
+              const buttonState = getButtonState(contest);
+              const now = new Date();
+              const isActive = new Date(contest.startDate) <= now && (!contest.endDate || new Date(contest.endDate) >= now);
+              const isCompleted = contest.endDate && new Date(contest.endDate) < now;
+              
+              return (
+                <div
+                  key={contest._id}
+                  className="group relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] border border-gray-200/50"
+                >
+                  {/* Status Badge */}
+                  <div className="absolute -top-3 -right-3 z-10">
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${
+                      isCompleted ? 'bg-gray-500 text-white' : 
+                      isActive ? 'bg-green-500 text-white' : 
+                      'bg-orange-500 text-white'
+                    }`}>
+                      {isCompleted ? 'Completed' : isActive ? 'Active' : 'Upcoming'}
+                    </div>
                   </div>
 
-                  <p className="text-indigo-100 mb-4 line-clamp-2">
-                    {contest.description ||
-                      "Join this exciting quiz contest to test your knowledge."}
-                  </p>
+                  {/* Header with gradient */}
+                  <div className="relative h-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 rounded-t-2xl overflow-hidden">
+                    <div className="absolute inset-0 bg-black/10"></div>
+                    <div className="relative h-full flex items-center justify-between px-6">
+                      <div className="text-white/90 text-sm font-medium">
+                        Contest #{contest._id.slice(-6).toUpperCase()}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                        <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                        <div className="w-2 h-2 bg-white/20 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
 
-                  <div className="mb-4 space-y-2">
-                    {contest.startDate && (
-                      <div className="flex items-center text-sm text-indigo-200">
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <span className="font-semibold">
-                          Starts: {formatDate(contest.startDate)}
+                  <div className="p-8">
+                    {/* Title and Question Count */}
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-2xl font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">
+                          {contest.title}
+                        </h3>
+                        <div className="flex items-center space-x-1 bg-indigo-50 px-3 py-1 rounded-full">
+                          <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-sm font-semibold text-indigo-600">
+                            {contest.QuestionSet?.length || 0}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                        {contest.description || "Join this exciting quiz contest to test your knowledge and compete with others."}
+                      </p>
+                    </div>
+
+                    {/* Contest Details */}
+                    <div className="space-y-4 mb-8">
+                      {/* Start and End Times */}
+                      <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                        {contest.startDate && (
+                          <div className="flex items-center text-sm">
+                            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                              <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-800">Starts</div>
+                              <div className="text-gray-600">{formatDate(contest.startDate)}</div>
+                            </div>
+                          </div>
+                        )}
                         
-                        </span>
-                        <br/>
-                        <br/>
-                        <span className="font-semibold">
-                          
-                          End: {formatDate(contest.endDate)}
-                        </span>
+                        {contest.endDate && (
+                          <div className="flex items-center text-sm">
+                            <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                              <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-800">Ends</div>
+                              <div className="text-gray-600">{formatDate(contest.endDate)}</div>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
 
-                    {contest.startDate && contest.endDate && (
-                      <div className="flex items-center text-sm text-indigo-200">
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span className="text-white font-semibold">
-                          Duration:{" "}
-                          {(
-                            (new Date(contest.endDate) -
-                              new Date(contest.startDate)) /
-                            (1000 * 60)
-                          ).toFixed(0)}{" "}
-                          minutes
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                      {/* Duration */}
+                      {/* {contest.startDate && contest.endDate && (
+                        <div className="flex items-center justify-center bg-indigo-50 rounded-xl p-4">
+                          <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                            <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-sm font-semibold text-gray-800">Duration</div>
+                            <div className="text-indigo-600 font-bold">
+                              {(
+                                (new Date(contest.endDate) - new Date(contest.startDate)) /
+                                (1000 * 60)
+                              ).toFixed(0)} minutes
+                            </div>
+                          </div>
+                        </div>
+                      )} */}
+                    </div>
 
-                  <button
-                    onClick={() => handleJoinContest(contest._id, contest)}
-                    className="w-full bg-white text-indigo-600 font-medium py-2 px-4 rounded-lg hover:bg-indigo-50 transition-colors duration-300 flex items-center justify-center"
-                    disabled={new Date(contest.startDate) > new Date()}
-                  >
-                    <span
-                      className={`w-full font-semibold ${
-                        new Date(contest.startDate) > new Date()
-                          ? "hover:cursor-not-allowed"
-                          : "hover:cursor-pointer"
+                    {/* Action Button */}
+                    <button
+                      onClick={() => handleButtonClick(contest, buttonState)}
+                      className={`w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] ${
+                        buttonState.disabled 
+                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none hover:transform-none' 
+                          : buttonState.type === 'view_result'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white'
+                          : buttonState.type === 'join'
+                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'
+                          : 'bg-gradient-to-r from-green-500 to-green-600 text-white'
                       }`}
+                      disabled={buttonState.disabled}
                     >
-                      Join Contest
-                    </span>
-                    <svg
-                      className="ml-2 w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </button>
+                      <span className="flex items-center">
+                        {buttonState.type === 'join' && (
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        )}
+                        {buttonState.type === 'view_result' && (
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        )}
+                        {buttonState.type === 'completed' && (
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        {buttonState.text}
+                      </span>
+                      {!buttonState.disabled && buttonState.type !== 'completed' && (
+                        <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
