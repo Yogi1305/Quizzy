@@ -372,22 +372,22 @@ export const makePublic = async (req, res) => {
         await contest.save();
 
         // Send FCM notification if contest becomes public
-        if (isPublic) {
-            const message = {
-                notification: {
-                    title: "New Contest Available 🎉",
-                    body: `${contest.title} starts at ${contest.startTime} and ends at ${contest.endTime}`
-                },
-                topic: "all_users" // All subscribed devices
-            };
+        // if (isPublic) {
+        //     const message = {
+        //         notification: {
+        //             title: "New Contest Available 🎉",
+        //             body: `${contest.title} starts at ${contest.startTime} and ends at ${contest.endTime}`
+        //         },
+        //         topic: "all_users" // All subscribed devices
+        //     };
 
-            try {
-                 const result = await admin.messaging().send(message);
-                console.log("Notification sent to all_users :: ", result);
-            } catch (fcmError) {
-                console.error("Error sending FCM notification:", fcmError);
-            }
-        }
+        //     try {
+        //          const result = await admin.messaging().send(message);
+        //         console.log("Notification sent to all_users :: ", result);
+        //     } catch (fcmError) {
+        //         console.error("Error sending FCM notification:", fcmError);
+        //     }
+        // }
 
         return res.status(200).json({
             success: true,
