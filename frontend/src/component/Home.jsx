@@ -116,15 +116,15 @@ const Home = () => {
           {/* Stats Section */}
           <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-2">10K+</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-2">10+</div>
               <div className="text-sm text-gray-400 font-medium">Active Users</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-2">50K+</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-2">50+</div>
               <div className="text-sm text-gray-400 font-medium">Questions</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 mb-2">100+</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 mb-2">10+</div>
               <div className="text-sm text-gray-400 font-medium">Categories</div>
             </div>
           </div>
@@ -167,8 +167,8 @@ const Home = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Lightning Fast</h3>
-                <p className="text-gray-300 leading-relaxed">Experience real-time competitions with millisecond precision and instant global leaderboards.</p>
+                <h3 className="text-2xl font-bold text-white mb-4"> Fast</h3>
+                <p className="text-gray-300 leading-relaxed">Experience real-time competitions </p>
               </div>
             </div>
             
@@ -181,8 +181,8 @@ const Home = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Military-Grade Security</h3>
-                <p className="text-gray-300 leading-relaxed">Bank-level encryption ensures fair play and protects your data with uncompromising security.</p>
+                <h3 className="text-2xl font-bold text-white mb-4"> Security</h3>
+                <p className="text-gray-300 leading-relaxed"> Ensures fair play and  .</p>
               </div>
             </div>
           </div>
