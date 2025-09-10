@@ -39,7 +39,6 @@ const Contest = () => {
   const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [isAdmin, setIsAdmin] = useState(false);
-  const [reditores, setreditores] = useState(false);
   const [contestStatuses, setContestStatuses] = useState({}); // Track contest completion status
   const navigate = useNavigate();
 
@@ -71,7 +70,7 @@ const Contest = () => {
     const statusPromises = contestList.map(async (contest) => {
       try {
         const response = await axios.post(
-          `${Baseurl}/complete`,
+          `${Baseurl}/checkcomplete`,
           { contestId: contest._id, userId },
           {
             headers: {
@@ -80,8 +79,9 @@ const Contest = () => {
             withCredentials: true,
           }
         );
+        // console.log("hi response",response.data.success)
         return {
-          contestId: contest._id,
+          
           isCompleted: response.data.success,
           response: response.data
         };
@@ -103,6 +103,7 @@ const Contest = () => {
     setContestStatuses(statusMap);
   };
 
+  // Get all contests
   const getContests = async () => {
     try {
       setLoading(true);
@@ -135,9 +136,132 @@ const Contest = () => {
     checkAdminStatus();
   }, []);
 
+  // Get contest overall status (based on time)
+  const getContestStatus = (contest) => {
+    const now = new Date();
+    const startDate = new Date(contest.startDate);
+    const endDate = contest.endDate ? new Date(contest.endDate) : null;
+    
+    if (startDate > now) {
+      return 'upcoming';
+    } else if (endDate && endDate < now) {
+      return 'ended';
+    } else {
+      return 'active';
+    }
+  };
+
+  // Get user's participation status for a contest
+  const getUserStatus = (contestId) => {
+    const contestStatus = contestStatuses[contestId];
+    return contestStatus && contestStatus.isCompleted ? 'completed' : 'not_participated';
+  };
+
+  // Determine button state and text based on contest timing and user status
+  const getButtonState = (contest) => {
+    const contestStatus = getContestStatus(contest);
+    const userStatus = getUserStatus(contest._id);
+    
+    switch (contestStatus) {
+      case 'upcoming':
+        return {
+          type: 'not_started',
+          text: 'Contest Not Started',
+          disabled: true,
+          className: 'bg-gray-400 text-white cursor-not-allowed',
+          icon: 'clock'
+        };
+      
+      case 'ended':
+        return {
+          type: 'view_result',
+          text: 'View Results',
+          disabled: false,
+          className: 'bg-blue-600 hover:bg-blue-700 text-white',
+          icon: 'chart'
+        };
+      
+      case 'active':
+        if (userStatus === 'completed') {
+          return {
+            type: 'completed_waiting',
+            text: 'Completed - Wait for Results',
+            disabled: true,
+            className: 'bg-green-600 text-white cursor-not-allowed',
+            icon: 'check'
+          };
+        } else {
+          return {
+            type: 'join',
+            text: 'Join Contest',
+            disabled: false,
+            className: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+            icon: 'play'
+          };
+        }
+      
+      default:
+        return {
+          type: 'disabled',
+          text: 'Unavailable',
+          disabled: true,
+          className: 'bg-gray-400 text-white cursor-not-allowed',
+          icon: 'x'
+        };
+    }
+  };
+
+  // Get status badge for display
+  const getStatusBadge = (contest) => {
+    const contestStatus = getContestStatus(contest);
+    const userStatus = getUserStatus(contest._id);
+    
+    switch (contestStatus) {
+      case 'upcoming':
+        return { 
+          text: 'Upcoming', 
+          className: 'bg-orange-500 text-white' 
+        };
+      
+      case 'ended':
+        return { 
+          text: 'Ended', 
+          className: 'bg-gray-500 text-white' 
+        };
+      
+      case 'active':
+        if (userStatus === 'completed') {
+          return { 
+            text: 'Active (Completed)', 
+            className: 'bg-blue-500 text-white' 
+          };
+        } else {
+          return { 
+            text: 'Active', 
+            className: 'bg-green-500 text-white' 
+          };
+        }
+      
+      default:
+        return { 
+          text: 'Unknown', 
+          className: 'bg-gray-400 text-white' 
+        };
+    }
+  };
+
+  // Handle joining a contest
   const handleJoinContest = async (contestId, contest) => {
     try {
       const userId = localStorage.getItem("userId1");
+      
+      // Double-check contest timing before joining
+      const contestStatus = getContestStatus(contest);
+      if (contestStatus !== 'active') {
+        toast.error("Contest is not currently active!");
+        return;
+      }
+
       const response = await axios.post(
         `${Baseurl}/complete`,
         { contestId, userId },
@@ -153,25 +277,49 @@ const Contest = () => {
       localStorage.setItem("contestid", contestId);
       console.log("Join contest response:", response);
       
+      // Navigate based on response - if already completed, go to results
       if (response.data.success) {
         navigate("/result");
       } else {
         navigate("/ContestQuestion");
       }
     } catch (error) {
-      console.log("Error while navigating to ContestQuestion:", error.response);
+      console.log("Error while joining contest:", error.response);
       toast.error("Failed to join contest. Please try again.");
     }
   };
 
+  // Handle viewing results
   const handleViewResult = async (contestId, contest) => {
     try {
+      const contestStatus = getContestStatus(contest);
+      if (contestStatus !== 'ended') {
+        toast.warning("Results are only available after the contest ends!");
+        return;
+      }
+
       toast.success(`Viewing results for ${contest.title}`);
       localStorage.setItem("contestid", contestId);
       navigate("/result");
     } catch (error) {
       console.log("Error while navigating to result:", error);
       toast.error("Failed to view results. Please try again.");
+    }
+  };
+
+  // Handle button clicks based on button state
+  const handleButtonClick = (contest, buttonState) => {
+    if (buttonState.disabled) return;
+    
+    switch (buttonState.type) {
+      case 'join':
+        handleJoinContest(contest._id, contest);
+        break;
+      case 'view_result':
+        handleViewResult(contest._id, contest);
+        break;
+      default:
+        break;
     }
   };
 
@@ -182,18 +330,17 @@ const Contest = () => {
   // Filter contests based on active filter
   const filteredContests = contests.filter((contest) => {
     if (activeFilter === "all") return true;
+    
+    const contestStatus = getContestStatus(contest);
+    
     if (activeFilter === "upcoming") {
-      return new Date(contest.startDate) > new Date();
+      return contestStatus === 'upcoming';
     }
     if (activeFilter === "active") {
-      const now = new Date();
-      return (
-        new Date(contest.startDate) <= now &&
-        (!contest.endDate || new Date(contest.endDate) >= now)
-      );
+      return contestStatus === 'active';
     }
     if (activeFilter === "completed") {
-      return contest.endDate && new Date(contest.endDate) < new Date();
+      return contestStatus === 'ended';
     }
     return true;
   });
@@ -211,75 +358,41 @@ const Contest = () => {
     });
   };
 
-  // Determine button state for a contest
-  const getButtonState = (contest) => {
-    const now = new Date();
-    const startDate = new Date(contest.startDate);
-    const endDate = new Date(contest.endDate);
-    const contestStatus = contestStatuses[contest._id];
+  // Get icon for button
+  const getButtonIcon = (iconType) => {
+    const iconClasses = "w-5 h-5 mr-2";
     
-    // Contest hasn't started yet
-    if (startDate > now) {
-      return {
-        type: 'disabled',
-        text: 'Not Started',
-        disabled: true,
-        className: 'bg-gray-400 cursor-not-allowed'
-      };
-    }
-    
-    // Contest has ended
-    if (endDate && endDate < now) {
-      return {
-        type: 'view_result',
-        text: 'View Result',
-        disabled: false,
-        className: 'bg-blue-600 hover:bg-blue-700'
-      };
-    }
-    
-    // Contest is active
-    if (contestStatus && contestStatus.isCompleted) {
-      // User has completed the contest, but contest is still active
-      // Show "View Result" but only allow if contest has ended
-      if (endDate && endDate < now) {
-        return {
-          type: 'view_result',
-          text: 'View Result',
-          disabled: false,
-          className: 'bg-blue-600 hover:bg-blue-700'
-        };
-      } else {
-        return {
-          type: 'completed',
-          text: 'Completed',
-          disabled: true,
-          className: 'bg-green-600 cursor-not-allowed'
-        };
-      }
-    } else {
-      // User hasn't completed the contest and it's active
-      return {
-        type: 'join',
-        text: 'Join Contest',
-        disabled: false,
-        className: 'bg-white text-indigo-600 hover:bg-indigo-50'
-      };
-    }
-  };
-
-  const handleButtonClick = (contest, buttonState) => {
-    if (buttonState.disabled) return;
-    
-    switch (buttonState.type) {
-      case 'join':
-        handleJoinContest(contest._id, contest);
-        break;
-      case 'view_result':
-        handleViewResult(contest._id, contest);
-        break;
+    switch (iconType) {
+      case 'play':
+        return (
+          <svg className={iconClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'chart':
+        return (
+          <svg className={iconClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        );
+      case 'check':
+        return (
+          <svg className={iconClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'clock':
+        return (
+          <svg className={iconClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
       default:
-        break;
+        return (
+          <svg className={iconClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        );
     }
   };
 
@@ -424,9 +537,7 @@ const Contest = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredContests.map((contest) => {
               const buttonState = getButtonState(contest);
-              const now = new Date();
-              const isActive = new Date(contest.startDate) <= now && (!contest.endDate || new Date(contest.endDate) >= now);
-              const isCompleted = contest.endDate && new Date(contest.endDate) < now;
+              const statusBadge = getStatusBadge(contest);
               
               return (
                 <div
@@ -435,12 +546,8 @@ const Contest = () => {
                 >
                   {/* Status Badge */}
                   <div className="absolute -top-3 -right-3 z-10">
-                    <div className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${
-                      isCompleted ? 'bg-gray-500 text-white' : 
-                      isActive ? 'bg-green-500 text-white' : 
-                      'bg-orange-500 text-white'
-                    }`}>
-                      {isCompleted ? 'Completed' : isActive ? 'Active' : 'Upcoming'}
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${statusBadge.className}`}>
+                      {statusBadge.text}
                     </div>
                   </div>
 
@@ -513,61 +620,23 @@ const Contest = () => {
                           </div>
                         )}
                       </div>
-
-                      {/* Duration */}
-                      {/* {contest.startDate && contest.endDate && (
-                        <div className="flex items-center justify-center bg-indigo-50 rounded-xl p-4">
-                          <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
-                            <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-sm font-semibold text-gray-800">Duration</div>
-                            <div className="text-indigo-600 font-bold">
-                              {(
-                                (new Date(contest.endDate) - new Date(contest.startDate)) /
-                                (1000 * 60)
-                              ).toFixed(0)} minutes
-                            </div>
-                          </div>
-                        </div>
-                      )} */}
                     </div>
 
                     {/* Action Button */}
                     <button
                       onClick={() => handleButtonClick(contest, buttonState)}
-                      className={`w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] ${
+                      className={`w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center shadow-lg ${
                         buttonState.disabled 
-                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none hover:transform-none' 
-                          : buttonState.type === 'view_result'
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white'
-                          : buttonState.type === 'join'
-                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'
-                          : 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+                          ? `${buttonState.className} shadow-none cursor-not-allowed` 
+                          : `${buttonState.className} hover:shadow-xl transform hover:translate-y-[-2px]`
                       }`}
                       disabled={buttonState.disabled}
                     >
                       <span className="flex items-center">
-                        {buttonState.type === 'join' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                        )}
-                        {buttonState.type === 'view_result' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                        )}
-                        {buttonState.type === 'completed' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        )}
+                        {getButtonIcon(buttonState.icon)}
                         {buttonState.text}
                       </span>
-                      {!buttonState.disabled && buttonState.type !== 'completed' && (
+                      {!buttonState.disabled && (
                         <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>

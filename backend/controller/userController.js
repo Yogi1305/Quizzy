@@ -49,7 +49,7 @@ export const register=async(req,res)=>{
       poll: 0,
     })
     await admin.messaging().subscribeToTopic([firebaseToken], "all_users");
-    await newuser.save();
+   
     return res.status(201).json({
         message: "Account created successfully",
         success: true,
@@ -151,7 +151,39 @@ export const completecontest = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+// this is to check the given user have joined the contest or not
+export const checkcompletecontest = async (req, res) => {
+  try {
+    const { contestId, userId } = req.body;
+    // console.log(contestId, userId);
 
+    const user = await User.findById({ _id: userId }); // Correct way to fetch a user
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // const alreadyGiven = user.contestgiven.some(id => id=== contestId);
+   const alreadyGiven = user.contestgiven.some(
+  id => id.toString() === contestId.toString()
+);
+
+
+
+
+    if (alreadyGiven) {
+      return res.status(200).json({ success: true });
+    }
+
+    // user.contestgiven.push(contestId);
+    // await user.save();
+
+    return res.status(200).json({ success: false });
+  } catch (error) {
+    console.error("Error in checkcompletecontest:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 export const userinfo=async(req,res)=>{
    const userId=req.id;
    console.log(userId);

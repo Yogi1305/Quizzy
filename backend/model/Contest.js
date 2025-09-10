@@ -38,7 +38,7 @@ const ContestModel = mongoose.Schema({
     QuestionSet: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'QuestionModel'
-    }]
+    }],
 }, {
     timestamps: true // Adds createdAt and updatedAt fields
 });

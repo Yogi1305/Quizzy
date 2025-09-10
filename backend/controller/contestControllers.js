@@ -34,11 +34,11 @@ export const createContest = async (req, res) => {
       });
     }
     const newContest = new Contest({
-      creator: userId, // Set the creator to the logged-in user
+      creator: userId, 
       title,
       description: description || "",
       startDate: startDate || new Date(),
-      endDate: endDate || undefined, // Will use the default function from schema
+      endDate: endDate || undefined, 
       isPublic: isPublic !== undefined ? isPublic : true,
       QuestionSet: []
     });
@@ -175,12 +175,12 @@ export const getContestById = async (req, res) => {
   try {
     
     const { id:contestId } = req.params;
-    console.log("hi",contestId);
+    // console.log("hi",contestId);
     
     const contest = await Contest.findById(contestId)
-      .populate('QuestionSet') // Populate questions
+      .populate('QuestionSet') 
       .select('-__v');
-    
+    console.log("contest by id",contest);
     if (!contest) {
       return res.status(404).json({ 
         success: false,
