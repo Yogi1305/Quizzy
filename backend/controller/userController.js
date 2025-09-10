@@ -30,7 +30,7 @@ export const register=async(req,res)=>{
 
     const {fullName,email,contact,passWord,firebaseToken}=req.body;
 
-    if(!fullName || !email ||!contact || !passWord || !firebaseToken)
+    if(!fullName || !email ||!contact || !passWord)
         return res.status(400).json({message :"all field are required"});
     const finduser= await User.findOne({email});
     if(finduser)
@@ -43,7 +43,7 @@ export const register=async(req,res)=>{
         contact,
         passWord:hashpassword,
         isAdmin:false,
-        firebaseToken:firebaseToken, // Store the Firebase token
+        firebaseToken:firebaseToken ||" ", // Store the Firebase token
       contestgiven: [],
       count: 0,
       poll: 0,
