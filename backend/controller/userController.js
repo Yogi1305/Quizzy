@@ -37,7 +37,7 @@ export const register=async(req,res)=>{
       return res.status(200).json({message:"user alreday exit"});
     const hashpassword= await bcrypt.hash(passWord,10);
 
-    const newuser= User.create({
+    const newuser= await User.create({
         fullName,
         email,
         contact,
@@ -48,6 +48,7 @@ export const register=async(req,res)=>{
       count: 0,
       poll: 0,
     })
+
     // await admin.messaging().subscribeToTopic([firebaseToken], "all_users");
    
     return res.status(201).json({

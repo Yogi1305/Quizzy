@@ -35,7 +35,7 @@ export const createpoll = async (req, res) => {
     Starttime,
     Endtime,
   });
-  await newpoll.save;
+ 
   return res.status(200).json({success:true,message:`${Title} poll is created successfully!`})
   } catch (error) {
     console.log("poll creation ",error);
