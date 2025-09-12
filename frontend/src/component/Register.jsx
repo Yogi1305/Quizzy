@@ -142,7 +142,8 @@ const RegistrationForm = () => {
 
     try {
       const response = await axios.post(`${Baseurl}/otp/otpverify`, {
-        otp: otp
+        otp: otp,
+        email: formData.email
       });
 
       toast.success(response?.data?.message || 'OTP verified successfully!');
