@@ -51,3 +51,45 @@ export const saveAnswer = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
+
+export const saveAnswer1 = async (req, res) => {
+  try {
+    const { UserId, ContestId, QuestionId, Answer } = req.body;
+
+    const question = await QuestionModel.findById(QuestionId);
+    if (!question) {
+      return res.status(404).json({ message: "Question not found" });
+    }
+
+    const isCorrect = question.Answer === Answer;
+
+    // Use MongoDB atomic update
+    const update = isCorrect
+      ? {
+          $addToSet: { correctAnswer: QuestionId }, // prevents duplicates
+          $inc: { correctAnswerCount: 1 }
+        }
+      : { $addToSet: { wrongAnswer: QuestionId } };
+
+    const quiz = await Quiz.findOneAndUpdate(
+      { UserId, ContestId },
+      {
+        $setOnInsert: {
+          UserId,
+          ContestId,
+          correctAnswer: [],
+          wrongAnswer: [],
+          correctAnswerCount: 0
+        },
+        ...update
+      },
+      { upsert: true, new: true } // create if not exists, return updated doc
+    );
+
+    res.status(200).json({ message: "Answer saved successfully", quiz });
+  } catch (error) {
+    console.error("Error saving answer:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

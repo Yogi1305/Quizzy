@@ -23,11 +23,11 @@ export const createContest = async (req, res) => {
         message: "Access denied"
       });
     }
-   findUser.count -= 1; // Increment the count
-    await findUser.save(); // Save the updated user document
+   findUser.count -= 1; 
+    await findUser.save(); 
     if (findUser.count < 0) {
-       findUser.isAdmin = false; // Set isAdmin to false if count is less than 0
-      await findUser.save(); // Save the updated user document
+       findUser.isAdmin = false;
+      await findUser.save();
       return res.status(400).json({ 
         success: false, 
         message: "You do not have enough contests left to create a new contest" 
@@ -59,7 +59,7 @@ export const createContest = async (req, res) => {
 // Add question to a contest
 export const addQuestion = async (req, res) => {
   try {
-     console.log("body",req.body);
+    //  console.log("body",req.body);
     const { Question, Options, Answer, contestId } = req.body;
 
     if (!Question || !Options || !Answer || !contestId) {
@@ -315,46 +315,7 @@ export const removeQuestionFromContest = async (req, res) => {
 
 // Get all public contests (for users to participate)
 
-// export const makePublic = async (req, res) => {
-//     try {
-//         const { contestId, isPublic } = req.body;
-        
-       
-//         const contest = await Contest.findById(contestId);
-//         console.log(contest);
-        
-       
-//         if (!contest) {
-//             return res.status(404).json({ 
-//                 success: false, 
-//                 message: "Contest not found" 
-//             });
-//         }
-        
-      
-//         contest.isPublic = isPublic;
-        
-        
-//         await contest.save();
-        
-//         return res.status(200).json({ 
-//             success: true,
-//             message: "Contest visibility updated successfully",
-//             contest: {
-//                 id: contest._id,
-//                 title: contest.title,
-//                 isPublic: contest.isPublic
-//             }
-//         });
-        
-//     } catch (error) {
-//         console.log("error in makePublic", error);
-//         return res.status(500).json({ 
-//             success: false, 
-//             message: "Internal server error" 
-//         });
-//     }
-// };
+
 export const makePublic = async (req, res) => {
     try {
         const { contestId, isPublic } = req.body;
