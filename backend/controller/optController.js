@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 export const sendOtp = async (req, res) => {
   const { email } = req.body;
    otp1 = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false,lowerCaseAlphabets:false });
-   console.log(otp1);
+//    console.log(otp1);
   
   try {
     // Send OTP email

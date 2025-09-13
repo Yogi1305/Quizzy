@@ -36,9 +36,9 @@ const RegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [formStep, setFormStep] = useState(1);
-  const [otp, setOtp] = useState(null);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
+  // const [otp, setOtp] = useState(null);
+  // const [otpSent, setOtpSent] = useState(false);
+  // const [otpVerified, setOtpVerified] = useState(false);
   
   // const branches = [
   //   'Computer Science and Engineering',
@@ -79,11 +79,11 @@ const RegistrationForm = () => {
       return;
     }
 
-    // Check if OTP is verified
-    if (!otpVerified) {
-      toast.warning('Please verify your email with OTP first');
-      return;
-    }
+    // Check if OTP is verified - COMMENTED OUT
+    // if (!otpVerified) {
+    //   toast.warning('Please verify your email with OTP first');
+    //   return;
+    // }
     
     setFormStep(2);
   };
@@ -134,46 +134,47 @@ const RegistrationForm = () => {
     }
   };
 
-  const handleVerifyOtp = async () => {
-    if (!otp) {
-      toast.warning('Please enter your OTP');
-      return;
-    }
+  // OTP VERIFICATION FUNCTIONS - COMMENTED OUT
+  // const handleVerifyOtp = async () => {
+  //   if (!otp) {
+  //     toast.warning('Please enter your OTP');
+  //     return;
+  //   }
 
-    try {
-      const response = await axios.post(`${Baseurl}/otp/otpverify`, {
-        otp: otp,
-        email: formData.email
-      });
+  //   try {
+  //     const response = await axios.post(`${Baseurl}/otp/otpverify`, {
+  //       otp: otp,
+  //       email: formData.email
+  //     });
 
-      toast.success(response?.data?.message || 'OTP verified successfully!');
-      setOtpVerified(true);
-      setOtpSent(false);
+  //     toast.success(response?.data?.message || 'OTP verified successfully!');
+  //     setOtpVerified(true);
+  //     setOtpSent(false);
 
-    } catch (error) {
-      console.error('Error in verifying OTP', error);
-      toast.error(error.response?.data?.message || 'OTP verification failed. Please try again.');
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error in verifying OTP', error);
+  //     toast.error(error.response?.data?.message || 'OTP verification failed. Please try again.');
+  //   }
+  // };
 
-  const handleSendOtp = async () => {
-    if (!formData.email) {
-      toast.warning('Please enter your email to send OTP');
-      return;
-    }
+  // const handleSendOtp = async () => {
+  //   if (!formData.email) {
+  //     toast.warning('Please enter your email to send OTP');
+  //     return;
+  //   }
 
-    try {
-      const response = await axios.post(`${Baseurl}/otp/otpsend`, { email: formData.email });
+  //   try {
+  //     const response = await axios.post(`${Baseurl}/otp/otpsend`, { email: formData.email });
 
-      toast.success(response?.data?.message || 'OTP sent successfully!');
-      setOtpSent(true);
-      setOtpVerified(false);
+  //     toast.success(response?.data?.message || 'OTP sent successfully!');
+  //     setOtpSent(true);
+  //     setOtpVerified(false);
 
-    } catch (error) {
-      console.error('Error in sending OTP', error);
-      toast.error(error.response?.data?.message || 'Failed to send OTP. Please try again.');
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error in sending OTP', error);
+  //     toast.error(error.response?.data?.message || 'Failed to send OTP. Please try again.');
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500 flex flex-col">
@@ -246,8 +247,9 @@ const RegistrationForm = () => {
                         </div>
                       </div>
                       
+                      {/* OTP SECTION - COMMENTED OUT */}
                       {/* Send OTP Button - Only show if OTP not sent and not verified */}
-                      {!otpSent && !otpVerified && (
+                      {/* {!otpSent && !otpVerified && (
                         <button
                           type="button"
                           onClick={handleSendOtp}
@@ -255,10 +257,10 @@ const RegistrationForm = () => {
                         >
                           Send OTP
                         </button>
-                      )}
+                      )} */}
 
                       {/* OTP Input - Only show if OTP is sent but not verified */}
-                      {otpSent && !otpVerified && (
+                      {/* {otpSent && !otpVerified && (
                         <div>
                           <label className="block text-sm font-medium text-white mb-1">OTP</label>
                           <div className="relative">
@@ -278,10 +280,10 @@ const RegistrationForm = () => {
                             />
                           </div>
                         </div>
-                      )}
+                      )} */}
 
                       {/* Verify OTP Button - Only show if OTP is sent but not verified */}
-                      {otpSent && !otpVerified && (
+                      {/* {otpSent && !otpVerified && (
                         <button
                           type="button"
                           onClick={handleVerifyOtp}
@@ -289,31 +291,29 @@ const RegistrationForm = () => {
                         >
                           Verify OTP
                         </button>
-                      )}
+                      )} */}
 
                       {/* Success Message - Show if OTP is verified */}
-                      {otpVerified && (
+                      {/* {otpVerified && (
                         <div className="flex items-center justify-center p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
                           <svg className="h-5 w-5 text-green-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <span className="text-green-200 font-medium">Email verified successfully!</span>
                         </div>
-                      )}
+                      )} */}
 
-                      {/* Continue Button - Only show if OTP is verified */}
-                      {otpVerified && (
-                        <button
-                          type="button"
-                          onClick={nextStep}
-                          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
-                        >
-                          Continue
-                          <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      )}
+                      {/* Continue Button - Modified to work without OTP verification */}
+                      <button
+                        type="button"
+                        onClick={nextStep}
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                      >
+                        Continue
+                        <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
                     </div>
                   </>
                 ) : (
