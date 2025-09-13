@@ -119,7 +119,7 @@ const TimeChangeModal = ({ isOpen, onClose, contestId, currentStartDate, current
           },
         }
       );
-      console.log("change time",response);
+      // console.log("change time",response);
 
       toast.success("Contest time updated successfully!");
       onUpdate(); // Refresh the contests list
@@ -297,14 +297,14 @@ const ContestCreation = () => {
   const handleOpenAiModal = (contestId) => {
     setSelectedAiContestId(contestId);
     setAiModalOpen(true);
-    console.log("Opening AI modal for contest:", contestId);
+    // console.log("Opening AI modal for contest:", contestId);
   };
 
   // Handler to close AI modal
   const handleCloseAiModal = () => {
     setAiModalOpen(false);
     setSelectedAiContestId(null);
-    console.log("Closing AI modal");
+    // console.log("Closing AI modal");
   };
 
   // Handler to open time change modal
@@ -355,7 +355,7 @@ const ContestCreation = () => {
         },
         withCredentials: true,
       });
-      console.log(response.data);
+      // console.log(response.data);
       setContests(response.data.contests);
     } catch (error) {
       console.error("Error fetching contests:", error);
@@ -413,7 +413,7 @@ const ContestCreation = () => {
         }
       );
       const newContest = response?.data.contest;
-      console.log("New contest created:", newContest);
+      // console.log("New contest created:", newContest);
 
       setContests([...contests, newContest]);
 
@@ -447,7 +447,7 @@ const ContestCreation = () => {
 
   // Toggle contest visibility
   const toggleContestVisibility = async (contestId, currentStatus) => {
-    console.log("s", currentStatus);
+    // console.log("s", currentStatus);
     try {
       await axios.post(
         `${Baseurl}/post/makepublic`,

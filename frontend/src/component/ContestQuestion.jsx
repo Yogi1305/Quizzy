@@ -111,7 +111,7 @@ const ContestQuestion = () => {
       );
 
       const contestData = response?.data?.contest;
-      console.log(contestData);
+      // console.log(contestData);
 
       if (contestData) {
         setContest(contestData);

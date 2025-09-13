@@ -18,7 +18,7 @@ const Mycontest = () => {
                   withCredentials: true,
                 });
                 setContests(response.data);
-                console.log("Contests fetched:", response);
+                // console.log("Contests fetched:", response);
             } catch (error) {
                 console.error("Error fetching contests:", error);
             } finally {

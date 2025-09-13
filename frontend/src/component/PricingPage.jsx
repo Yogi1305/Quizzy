@@ -166,7 +166,7 @@ export default function PricingPage() {
    
       rzp1.open();
    } catch (error) {
-     console.log("payment error",error)
+    //  console.log("payment error",error)
      toast.error("payment error ")
    }
       

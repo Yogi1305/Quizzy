@@ -28,7 +28,7 @@ const QuizResults = () => {
             withCredentials: true
           }
         );
-        console.log(response)
+        // console.log(response)
         setResults(response.data.results);
         setTotalParticipants(response.totalParticipants);
         

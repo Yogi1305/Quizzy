@@ -115,7 +115,7 @@ export const getallcontestofuser = async (req, res) => {
     const contests = await Contest.find({creator:userid})
       .sort({ createdAt: -1 })
       // .populate('QuestionSet')
-      .select('-__v'); 
+      .select('-Answer -__v'); 
     
     if (contests.length === 0) {
       return res.status(200).json({ 
@@ -144,8 +144,10 @@ export const getallcontest = async (req, res) => {
   try {
     const contests = await Contest.find()
       .sort({ createdAt: -1 })
-      .populate('QuestionSet') // Populate questions
-      .select('-__v'); // Exclude version key
+      .populate({
+    path: 'QuestionSet',
+    select: '-Answer ' 
+  }).select(' -__v'); // Exclude version key
 
     if (contests.length === 0) {
       return res.status(200).json({ 
@@ -178,8 +180,12 @@ export const getContestById = async (req, res) => {
     // console.log("hi",contestId);
     
     const contest = await Contest.findById(contestId)
-      .populate('QuestionSet') 
-      .select('-__v');
+  .populate({
+    path: 'QuestionSet',
+    select: '-Answer ' 
+  })
+  .select('-__v'); // still exclude __v from Contest itself
+
     console.log("contest by id",contest);
     if (!contest) {
       return res.status(404).json({ 
@@ -320,7 +326,7 @@ export const makePublic = async (req, res) => {
     try {
         const { contestId, isPublic } = req.body;
 
-        const contest = await Contest.findById(contestId);
+        const contest = await Contest.findById(contestId).select('-Answer');
 
         if (!contest) {
             return res.status(404).json({

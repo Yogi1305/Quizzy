@@ -81,7 +81,7 @@ const QuestionForm = ({ contestId, onComplete }) => {
         ...formData,
         contestId: contestId
       };
-    console.log("payload of question",payload);
+    // console.log("payload of question",payload);
      const response= await axios.post(`${Baseurl}/post/addQuestion`, payload, {
         headers: {
           'Content-Type': 'application/json',

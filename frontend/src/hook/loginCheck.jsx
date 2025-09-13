@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
           },
           withCredentials: true,
         });
-
+        //  console.log("Login check response: hook :", response.data.success);
         setIsLoggedIn(response.data?.success || false);
 
       } catch (err) {

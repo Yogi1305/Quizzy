@@ -275,7 +275,7 @@ const Contest = () => {
 
       toast.success(`Joining ${contest.title}`);
       localStorage.setItem("contestid", contestId);
-      console.log("Join contest response:", response);
+      // console.log("Join contest response:", response);
       
       // Navigate based on response - if already completed, go to results
       if (response.data.success) {

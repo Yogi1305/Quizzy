@@ -24,7 +24,7 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave ,contestId}) => {
       }
        try {
            const respomse=await axios.post(`${Baseurl}/generate`,data)
-           console.log(respomse)
+          //  console.log(respomse)
            setQuestions(respomse.data);
            setIsGenerating(false);
        } catch (error) {
@@ -35,7 +35,7 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave ,contestId}) => {
   };
 
   const handlesaveQ = async (index) => {
-    console.log('Saving question:', questions[index]);
+    // console.log('Saving question:', questions[index]);
       try {
      const formm=questions[index]
       const payload = {

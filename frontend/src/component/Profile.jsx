@@ -11,7 +11,7 @@ const Profile = () => {
     try {
       const response = await axios.get(`${Baseurl}/getuser/${userId}`);
       setuserdata(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }

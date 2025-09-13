@@ -56,7 +56,7 @@ const Resetpassword = () => {
             if (response.status == 200) {
                  navigate('/login'); // Redirect to login page after successful reset
             }
-            console.log("Password reset response:", response.data);
+            // console.log("Password reset response:", response.data);
             toast.success("Password reset successful");
         } catch (error) {
             console.error("Error resetting password:", error.message);
